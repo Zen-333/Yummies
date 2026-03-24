@@ -1,0 +1,21 @@
+{
+  "name": "yummies",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zen-333/Yummies.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zen-333/Yummies/issues"
+  },
+  "homepage": "https://github.com/Zen-333/Yummies#readme",
+  "workspaces": ["frontend", "backend"]
+}
