@@ -3,7 +3,9 @@ export type Recipe = {
     name: string
     notes?: string
     imagesURL?: Array<string>
-    ingredients?: string
+    ingredients?: Array<string>
     steps?: Array<string>
 }
 
+export type NewRecipe = Omit<Recipe, '_id'> 
+// this creates a new type coping all the variables inside Recipe but leaving out _id

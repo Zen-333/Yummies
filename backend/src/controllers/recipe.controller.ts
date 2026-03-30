@@ -1,16 +1,16 @@
 import {Request, Response} from 'express';
-import { Recipe } from '../types/recipe';
+import { NewRecipe } from '../types/recipe';
 
 export const getAllRecipe = async (req: Request, res: Response) => {
     res.json({success: true, message: "GET ALL RECIPE"});
 };
 
 export const addRecipe = (req: Request, res: Response) => {
-    const {name, notes, imagesURL, steps, ingredients} = req.body;
+    const {name, notes, imagesURL, steps, ingredients} = req.body as NewRecipe;
 
-    if(name === "")
+    if(!name || name.trim() === "")
     {
-        res.status(500);
+        res.status(400);
         res.json({success: false, message: "PLEASE PROVIDE A NAME"});
         return;
     }
