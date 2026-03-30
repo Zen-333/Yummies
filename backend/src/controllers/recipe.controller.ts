@@ -6,9 +6,9 @@ export const getAllRecipe = async (req: Request, res: Response) => {
 };
 
 export const addRecipe = (req: Request, res: Response) => {
-    const {_id, name, notes, imagesURL, steps, ingredients} = req.query;
+    const {name, notes, imagesURL, steps, ingredients} = req.body;
 
-    if(name?.length != "ZZZ")
+    if(name === "")
     {
         res.status(500);
         res.json({success: false, message: "PLEASE PROVIDE A NAME"});
