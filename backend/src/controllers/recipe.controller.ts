@@ -25,7 +25,7 @@ export const addRecipe = (req: Request, res: Response) => {
     }
 
     const userRecipe: Recipe = {
-        _id: String(RecipeData.length++),
+        _id: String(RecipeData.length + 1),
         name: name,
         notes: notes,
         imagesURL: imagesURL,
@@ -39,8 +39,23 @@ export const addRecipe = (req: Request, res: Response) => {
 
 export const updateRecipe = (req: Request, res: Response) => {
     const {name, notes, imagesURL, steps, ingredients} = req.body as NewRecipe;
+    const { id } = req.params; 
 
-    res.json({success: true, message: "UPDATE RECIPE"});
+    if(RecipeData.some(item => item._id === id))
+    {
+        const index = RecipeData.findIndex(item => item._id === id);
+
+        if(name && name != RecipeData[index].name)  RecipeData[index].name = name;
+        if(notes && notes != RecipeData[index].notes)  RecipeData[index].notes = notes;
+        if(ingredients && ingredients != RecipeData[index].ingredients)  RecipeData[index].ingredients = ingredients;
+        if(steps && steps != RecipeData[index].steps)  RecipeData[index].steps = steps;
+        if(imagesURL && imagesURL != RecipeData[index].imagesURL)  RecipeData[index].imagesURL = imagesURL;
+
+        res.status(200).json({success: true, message: "RECIPE UPDATED SUCCESSFULY"});
+        return;
+    }
+
+    res.status(400).json({success: false, message: "COUDN'T UPDATE RECIPE"});
 };
 
 export const deleteRecipe = (req: Request, res: Response) => {
@@ -54,6 +69,6 @@ export const deleteRecipe = (req: Request, res: Response) => {
         return;
     }
 
-    res.status(400).json({success: false, message: "INVALID RECIPE ID", id: id});
+    res.status(406).json({success: false, message: "INVALID RECIPE ID", id: id});
 
 };
