@@ -1,0 +1,63 @@
+
+*{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.header {
+    display: flex;
+    flex-flow: row nowrap;
+    position: sticky;
+    align-items: center;
+
+    z-index: 1;
+    width: 100%;
+    height: auto;
+}
+
+.container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+
+    width: 100%;
+    height: auto;
+    padding: 20px;
+}
+
+.buttons {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 35%;
+}
+
+.logo{
+    font-size: 2em;
+}
+
+.addRecipe{
+
+}
+
+.login {
+    display: flex;
+    align-items: center;
+}
+
+.login-btn{
+    padding: 5px 20px;
+    align-items: center;
+    background-color: whitesmoke;
+    border-radius: 5px;
+    border-color: #ffffff60;
+}
+
+.addRecipe-btn{
+    padding: 5px 40px;
+    align-items: center;
+
+    color: whitesmoke;
+    background-color: rgba(3, 2, 19);
+    border-radius: 5px;
+    border-color: #ffffff60;
+}

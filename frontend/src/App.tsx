@@ -1,9 +1,11 @@
 import './styles/App.css'
+import Header from "./component/header"
 
 function App() {
 
   return (
     <> 
+    <Header/>
     </>
   )
 }
