@@ -5,13 +5,7 @@ let RecipeData: Array<Recipe> = [];
 
 export const getAllRecipe = async (req: Request, res: Response) => {
 
-    if(RecipeData.length <= 0) 
-    {
-        res.status(400).json({success: false, message: "NO RECIPIES FOUND"});
-        return;
-    }
-
-    res.json({success: true, message: "GET ALL RECIPIES", recipies: RecipeData});
+    res.status(200).json({success: true, message: "GET ALL RECIPIES", recipies: RecipeData});
 };
 
 export const addRecipe = (req: Request, res: Response) => {
@@ -39,36 +33,40 @@ export const addRecipe = (req: Request, res: Response) => {
 
 export const updateRecipe = (req: Request, res: Response) => {
     const {name, notes, imagesURL, steps, ingredients} = req.body as NewRecipe;
-    const { id } = req.params; 
+    const { id } = req.params;
 
-    if(RecipeData.some(item => item._id === id))
+    const index = RecipeData.findIndex(item => item._id === id);
+    // findIndex returns -1 if not found
+
+    if(index !== -1)
     {
-        const index = RecipeData.findIndex(item => item._id === id);
-
-        if(name && name != RecipeData[index].name)  RecipeData[index].name = name;
-        if(notes && notes != RecipeData[index].notes)  RecipeData[index].notes = notes;
-        if(ingredients && ingredients != RecipeData[index].ingredients)  RecipeData[index].ingredients = ingredients;
-        if(steps && steps != RecipeData[index].steps)  RecipeData[index].steps = steps;
-        if(imagesURL && imagesURL != RecipeData[index].imagesURL)  RecipeData[index].imagesURL = imagesURL;
+        if(name !== undefined && name != RecipeData[index].name)  RecipeData[index].name = name;
+        if(notes !== undefined && notes != RecipeData[index].notes)  RecipeData[index].notes = notes;
+        if(ingredients !== undefined && ingredients != RecipeData[index].ingredients)  RecipeData[index].ingredients = ingredients;
+        if(steps !== undefined && steps != RecipeData[index].steps)  RecipeData[index].steps = steps;
+        if(imagesURL !== undefined && imagesURL != RecipeData[index].imagesURL)  RecipeData[index].imagesURL = imagesURL;
 
         res.status(200).json({success: true, message: "RECIPE UPDATED SUCCESSFULY"});
         return;
     }
 
-    res.status(400).json({success: false, message: "COUDN'T UPDATE RECIPE"});
+    res.status(404).json({success: false, message: "COUDN'T UPDATE RECIPE"});
 };
 
 export const deleteRecipe = (req: Request, res: Response) => {
 
     const { id } = req.params;
 
-    if(RecipeData.some(item => item._id === id))
+    const index = RecipeData.findIndex(item => item._id === id);
+    // findIndex returns -1 if not found
+
+    if(index !== -1)
     {
-        RecipeData = RecipeData.filter(function(item) {return item._id != id});
+        RecipeData.splice(index, 1)
         res.status(200).json({success: true, message: "RECIPE DELETED", id: id});
         return;
     }
 
-    res.status(406).json({success: false, message: "INVALID RECIPE ID", id: id});
+    res.status(404).json({success: false, message: "INVALID RECIPE ID", id: id});
 
 };
