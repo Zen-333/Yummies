@@ -28,7 +28,8 @@
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
-    width: 35%;
+    gap: 40px;
+    
 }
 
 .logo{
@@ -36,7 +37,8 @@
 }
 
 .addRecipe{
-
+    display: flex;
+    align-items: center;
 }
 
 .login {
