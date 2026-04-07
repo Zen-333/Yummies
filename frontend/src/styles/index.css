@@ -1,0 +1,47 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: #ffffff;
+}
+
+:root {
+
+    --BC-BTN-PRIMARY: rgba(3, 2, 19);
+    --BC-BTN-SECONDARY: whitesmoke;
+
+    --PADDING-BTN: 8px 20px; 
+    --BORDER-RADIUS-BTN: 6px; 
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: var(--PADDING-BTN);
+    border-radius: var(--BORDER-RADIUS-BTN);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: opacity 0.15s ease;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btn--primary {
+    background-color: var(--BC-BTN-PRIMARY);
+    color: #ffffff;
+}
+
+.btn--secondary {
+    background-color: var(--BC-BTN-SECONDARY);
+    color: #0a0a0a;
+    border-color: #d0d0d0;
+}

@@ -1,23 +1,22 @@
 import "../styles/header.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// Change this line:
-import { faBlender } from "@fortawesome/free-solid-svg-icons";
+import { faBlender, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 function Header() {
 
   return (
     <> 
         <div className="header">
-          <div className="container">
-            <div className="logo">
+          <div className="header__inner">
+            <div className="header__logo">
               <FontAwesomeIcon icon={faBlender} />Yummies
             </div>
-            <div className="buttons">
-              <div className="addRecipe">
-                <button className="addRecipe-btn">+ Add Recipe</button>
+            <div className="header__actions">
+              <div>
+                <button className="btn--primary btn"><FontAwesomeIcon icon={faPlus} /> Add Recipe</button>
               </div>
-              <div className="login">
-                <button className="login-btn">Login</button>
+              <div>
+                <button className="btn--secondary btn">Login</button>
               </div>
             </div>
           </div>
