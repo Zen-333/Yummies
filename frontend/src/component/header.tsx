@@ -2,7 +2,9 @@ import "../styles/header.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBlender, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-function Header() {
+interface HeaderProps { onAddClick: () => void; }
+
+function Header({onAddClick}: HeaderProps) {
 
   return (
     <> 
@@ -13,7 +15,7 @@ function Header() {
             </div>
             <div className="header__actions">
               <div>
-                <button className="btn--primary btn"><FontAwesomeIcon icon={faPlus} /> Add Recipe</button>
+                <button className="btn--primary btn" onClick={onAddClick}><FontAwesomeIcon icon={faPlus} /> Add Recipe</button>
               </div>
               <div>
                 <button className="btn--secondary btn">Login</button>
