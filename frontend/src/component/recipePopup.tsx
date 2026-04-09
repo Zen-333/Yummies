@@ -1,4 +1,6 @@
 import "../styles/recipePopup.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 
 interface PopupProps {
   onClose: () => void;
@@ -11,46 +13,57 @@ function RecipePopup({onClose}: PopupProps) {
     <div className="popup-overlay" onClick={onClose}>
         <div className="popup" onClick={(e) => e.stopPropagation()}>
             <div className="popup__title">
-                <h1>Edit Recipe</h1>
+                <p>Edit Recipe</p>
+                <button onClick={onClose} className="btn"><FontAwesomeIcon icon={faX} /></button>
             </div>
-            <div className="popup__input__block">
-              <div className="popup__input__title">
-                <h2>Recipe Name</h2>
-              </div>
-              <div className="popup__input__field">
-                <input type="text"/>
-              </div>
-            </div>
-            <div className="popup__input__block">
-              <div className="popup__input__title">
-                <h2>Ingredients</h2>
-              </div>
-              <div className="popup__input__field">
-                <input type="text"/>
+            <div className="popup__body">
+              <div className="popup__input__block">
+                <div className="popup__input__title">
+                  <p>Recipe Name</p>
+                </div>
+                <div className="popup__input__field">
+                  <input type="text"/>
+                </div>
               </div>
             </div>
-             <div className="popup__input__block">
-              <div className="popup__input__title">
-                <h2>Steps</h2>
-              </div>
-              <div className="popup__input__field">
-                <input type="text"/>
-              </div>
-            </div>
-             <div className="popup__input__block">
-              <div className="popup__input__title">
-                <h2>Images / Videos</h2>
-              </div>
-              <div className="popup__input__field">
-                <input type="text"/>
+            <div className="popup__body">
+              <div className="popup__input__block">
+                <div className="popup__input__title">
+                  <p>Ingredients</p>
+                </div>
+                <div className="popup__input__field">
+                  <input type="text"/>
+                </div>
               </div>
             </div>
-             <div className="popup__input__block">
-              <div className="popup__input__title">
-                <h2>Notes</h2>
+            <div className="popup__body">
+              <div className="popup__input__block">
+                <div className="popup__input__title">
+                  <p>Steps</p>
+                </div>
+                <div className="popup__input__field">
+                  <input type="text"/>
+                </div>
               </div>
-              <div className="popup__input__field">
-                <input type="text" className="popup__notes__input"/>
+            </div>
+            <div className="popup__block">
+              <div className="popup__input__block">
+                <div className="popup__input__title">
+                  <p>Images / Videos</p>
+                </div>
+                <div className="popup__input__field">
+                  <input type="text"/>
+                </div>
+              </div>
+            </div>
+            <div className="popup_block">
+              <div className="popup__input__block">
+                <div className="popup__input__title">
+                  <p>Notes</p>
+                </div>
+                <div className="popup__input__field">
+                  <input type="text" className="popup__notes__input"/>
+                </div>
               </div>
             </div>
             <div className="popup__action__buttons">
