@@ -12,66 +12,58 @@ function RecipePopup({onClose}: PopupProps) {
     <> 
     <div className="popup-overlay" onClick={onClose}>
         <div className="popup" onClick={(e) => e.stopPropagation()}>
+
             <div className="popup__title">
                 <p>Edit Recipe</p>
                 <button onClick={onClose} className="btn"><FontAwesomeIcon icon={faX} /></button>
             </div>
+
             <div className="popup__body">
+
               <div className="popup__input__block">
-                <div className="popup__input__title">
-                  <p>Recipe Name</p>
-                </div>
-                <div className="popup__input__field">
-                  <input type="text"/>
-                </div>
+                <p className="popup__input__lable">Recipe Name</p>
+                <input type="text" placeholder="e.g. Classic Pancakes"/>
               </div>
-            </div>
-            <div className="popup__body">
+
               <div className="popup__input__block">
-                <div className="popup__input__title">
-                  <p>Ingredients</p>
-                </div>
-                <div className="popup__input__field">
-                  <input type="text"/>
-                </div>
+                <p className="popup__input__lable">Ingredients</p>
+                <textarea rows={5} placeholder="e.g. 2 cups floaus&#10;2 egss&#10;1½ cups milk"/>
               </div>
-            </div>
-            <div className="popup__body">
+
               <div className="popup__input__block">
-                <div className="popup__input__title">
+                <div className="popup__input__lable popup__input__lable--row">
                   <p>Steps</p>
-                  <button className="btn btn--secondary"><FontAwesomeIcon icon={faPlus} /> Add Step</button>
+                  <button className="btn btn--secondary">
+                    <FontAwesomeIcon icon={faPlus}/> Add Step
+                  </button>
                 </div>
-                <div className="popup__input__field">
-                  <input type="text"/>
+                <div className="popup__steps">
+
                 </div>
               </div>
-            </div>
-            <div className="popup__block">
+
               <div className="popup__input__block">
-                <div className="popup__input__title">
-                  <p>Images / Videos</p>
-                   <button className="btn btn--secondary"><FontAwesomeIcon icon={faPlus} /> Add Media</button>
+                <div className="popup__input__lable popup__input__lable--row">
+                  <p>Images / Videos(URLs)</p>
+                    <button className="btn btn--secondary">
+                      <FontAwesomeIcon icon={faPlus} /> Add Media
+                    </button>
                 </div>
-                <div className="popup__input__field">
-                  <input type="text"/>
-                </div>
+                <p className="popup__empty__text">No images or videos added yet</p>
               </div>
-            </div>
-            <div className="popup_block">
+
               <div className="popup__input__block">
-                <div className="popup__input__title">
-                  <p>Notes</p>
-                </div>
-                <div className="popup__input__field">
-                  <input type="text" className="popup__notes__input"/>
-                </div>
+                <p className="popup__input__lable">Notes</p>
+                <textarea rows={3} placeholder="Any extra tips or serving suggestions..."></textarea>
               </div>
+
             </div>
+            
             <div className="popup__action__buttons">
               <button onClick={onClose} className="btn btn--primary">Save Changes</button>
               <button onClick={onClose} className="btn btn--secondary">Cancel</button>
             </div>
+
         </div>
     </div>
 
