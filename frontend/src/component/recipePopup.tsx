@@ -1,6 +1,6 @@
 import "../styles/recipePopup.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
+import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 interface PopupProps {
   onClose: () => void;
@@ -40,6 +40,7 @@ function RecipePopup({onClose}: PopupProps) {
               <div className="popup__input__block">
                 <div className="popup__input__title">
                   <p>Steps</p>
+                  <button className="btn btn--secondary"><FontAwesomeIcon icon={faPlus} /> Add Step</button>
                 </div>
                 <div className="popup__input__field">
                   <input type="text"/>
@@ -50,6 +51,7 @@ function RecipePopup({onClose}: PopupProps) {
               <div className="popup__input__block">
                 <div className="popup__input__title">
                   <p>Images / Videos</p>
+                   <button className="btn btn--secondary"><FontAwesomeIcon icon={faPlus} /> Add Media</button>
                 </div>
                 <div className="popup__input__field">
                   <input type="text"/>

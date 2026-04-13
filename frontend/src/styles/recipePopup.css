@@ -21,7 +21,7 @@
     justify-content: center;
     height: 90vh;
     max-height: 90vh;
-    width: 400px;
+    width: 600px;
     padding-top: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -37,8 +37,6 @@
     flex-direction: row;
     flex-shrink: 0; /* never shrinks stays at the top */
     justify-content: space-between;
-    gap: 190px;
-    margin-right: auto;
     padding-right: 20px;
     padding-left: 20px;
     padding-top: 10px;
@@ -55,6 +53,11 @@
 .popup__input__title{
     font-size: 15px;
     padding-bottom: 8px;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
 }
 
 .popup__input__field{
