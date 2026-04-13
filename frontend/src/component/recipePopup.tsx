@@ -1,4 +1,5 @@
 import "../styles/recipePopup.css"
+import { useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
 
@@ -7,6 +8,21 @@ interface PopupProps {
 }
 
 function RecipePopup({onClose}: PopupProps) {
+
+  const [steps, setSteps] = useState<string[]>([""]);
+  
+  const addStep = () => setSteps([...steps, ""]);
+
+  const removeStep = (index: number) => {
+    setSteps(steps.filter((_, i) => i !== index));
+  };
+
+  const updateStep = (index: number, value: string) => {
+    const updated = [...steps];
+    updated[index] = value;
+    setSteps(updated);
+  };
+
 
   return (
     <> 
@@ -33,12 +49,25 @@ function RecipePopup({onClose}: PopupProps) {
               <div className="popup__input__block">
                 <div className="popup__input__lable popup__input__lable--row">
                   <p>Steps</p>
-                  <button className="btn btn--secondary">
+                  <button className="btn btn--secondary" onClick={addStep}>
                     <FontAwesomeIcon icon={faPlus}/> Add Step
                   </button>
                 </div>
                 <div className="popup__steps">
+                  {steps.map((step, index) => (
+                    <div key={index} className="popup__step__row">
+                      <span className="popup__step__number">{index + 1}</span>
+                      <input type="text" 
+                      value={step} 
+                      placeholder={`Step ${index + 1}`}
+                      onChange={(e) => updateStep(index, e.target.value)} />
 
+                      <button className="btn btn--icon" onClick={() => removeStep(index)}>
+                        <FontAwesomeIcon icon={faX} />
+                      </button>
+                    </div>
+
+                  ))}
                 </div>
               </div>
 
@@ -58,7 +87,7 @@ function RecipePopup({onClose}: PopupProps) {
               </div>
 
             </div>
-            
+
             <div className="popup__action__buttons">
               <button onClick={onClose} className="btn btn--primary">Save Changes</button>
               <button onClick={onClose} className="btn btn--secondary">Cancel</button>
