@@ -1,5 +1,5 @@
 import "../styles/recipePopup.css"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
 
@@ -9,11 +9,31 @@ interface PopupProps {
 
 function RecipePopup({onClose}: PopupProps) {
 
+  interface MediaItem {
+    file: File;
+    previewUrl: string;
+  }
+
   const [steps, setSteps] = useState<string[]>([""]);
   const [recipeName, setRecipeName] = useState<string>("");
-  const [recipeMedia, setRecipeMedia] = useState<string[]>([""]);
+  const [recipeMedia, setRecipeMedia] = useState<MediaItem[]>([]);
   const [recipeIngredients, setRecipeIngredients] = useState<string[]>([""]);
   const [recipeNotes, setRecipeNotes] = useState<string>("");
+
+  const mediaInputRef = useRef<HTMLInputElement>(null);
+
+  const handleMediaAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if(!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+    setRecipeMedia((prev) => [...prev, {file, previewUrl}]);
+  };
+
+  const removeMedia = (index: number) => {
+    URL.revokeObjectURL(recipeMedia[index].previewUrl);
+    removeFromArray(setRecipeMedia, index);
+  }
 
   const addToArray = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, defaultValue: T) => {setter((prev) => [...prev, defaultValue])}; 
 
@@ -27,6 +47,10 @@ function RecipePopup({onClose}: PopupProps) {
       updated[index] = value;
       return updated;
     });
+  };
+
+  const handleSave = async () => {
+
   };
 
 
@@ -43,23 +67,23 @@ function RecipePopup({onClose}: PopupProps) {
             <div className="popup__body">
 
               <div className="popup__input__block">
-                <p className="popup__input__lable">Recipe Name</p>
+                <p className="popup__input__label">Recipe Name</p>
                 <input type="text" placeholder="e.g. Classic Pancakes" onChange={(e) => setRecipeName(e.target.value)}/>
               </div>
 
               <div className="popup__input__block">
-                <div className="popup__input__lable popup__input__lable--row">
+                <div className="popup__input__label popup__input__label--row">
                   <p>Ingredients</p>
                   <button className="btn btn--secondary" onClick={() => addToArray<string>(setRecipeIngredients, "")}>
                     <FontAwesomeIcon icon={faPlus}/> Add Ingredient
                   </button>
                 </div>
                 <div className="popup__steps">
-                  {recipeIngredients.map((recipeIngredients, index) => (
+                  {recipeIngredients.map((ingredient, index) => (
                     <div key={index} className="popup__step__row">
                       <span className="popup__step__number">{index + 1}</span>
                       <input type="text" 
-                      value={recipeIngredients} 
+                      value={ingredient} 
                       placeholder={`Ingredient ${index + 1}`}
                       onChange={(e) => updateArray(setRecipeIngredients, index,e.target.value)} />
 
@@ -72,7 +96,7 @@ function RecipePopup({onClose}: PopupProps) {
               </div>
 
               <div className="popup__input__block">
-                <div className="popup__input__lable popup__input__lable--row">
+                <div className="popup__input__label popup__input__label--row">
                   <p>Steps</p>
                   <button className="btn btn--secondary" onClick={() => addToArray<string>(setSteps, "")}>
                     <FontAwesomeIcon icon={faPlus}/> Add Step
@@ -97,17 +121,42 @@ function RecipePopup({onClose}: PopupProps) {
               </div>
 
               <div className="popup__input__block">
-                <div className="popup__input__lable popup__input__lable--row">
+                <div className="popup__input__label popup__input__label--row">
                   <p>Images / Videos(URLs)</p>
-                    <button className="btn btn--secondary">
+                    <button className="btn btn--secondary" onClick={() => mediaInputRef.current?.click()}>
                       <FontAwesomeIcon icon={faPlus} /> Add Media
                     </button>
+
+                    <input ref={mediaInputRef} 
+                    type="file" 
+                    accept="image/*,video/*"
+                    style={{display: "none"}}
+                    onChange={handleMediaAdd}/>
                 </div>
-                <p className="popup__empty__text">No images or videos added yet</p>
+                 { 
+                      recipeMedia.length === 0 ? (
+                        <p className="popup__empty__text">No images or videos added yet</p>
+                      ) : (
+                        <div className="popup__media__list">
+                          {recipeMedia.map((item, index) => (
+                            <div key={index} className="popup__media__item">
+                              {item.file.type.startsWith("video/") ? (
+                                <video src={item.previewUrl} controls className="popup__media__preview"></video>
+                              ) : (
+                                <img src={item.previewUrl} alt={item.file.name} className="popup__media__preview" />
+                              )}
+                              <button className="btn btn--icon" onClick={() => removeMedia(index)}>
+                                <FontAwesomeIcon icon={faX} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )
+                    }
               </div>
 
               <div className="popup__input__block">
-                <p className="popup__input__lable">Notes</p>
+                <p className="popup__input__label">Notes</p>
                 <textarea rows={3} placeholder="Any extra tips or serving suggestions..." onChange={(e) => setRecipeNotes(e.target.value)}></textarea>
               </div>
 
