@@ -48,8 +48,27 @@ function RecipePopup({onClose}: PopupProps) {
               </div>
 
               <div className="popup__input__block">
-                <p className="popup__input__lable">Ingredients</p>
-                <textarea rows={5} placeholder="e.g. 2 cups floaus&#10;2 egss&#10;1½ cups milk"/>
+                <div className="popup__input__lable popup__input__lable--row">
+                  <p>Ingredients</p>
+                  <button className="btn btn--secondary" onClick={() => addToArray<string>(setRecipeIngredients, "")}>
+                    <FontAwesomeIcon icon={faPlus}/> Add Ingredient
+                  </button>
+                </div>
+                <div className="popup__steps">
+                  {recipeIngredients.map((recipeIngredients, index) => (
+                    <div key={index} className="popup__step__row">
+                      <span className="popup__step__number">{index + 1}</span>
+                      <input type="text" 
+                      value={recipeIngredients} 
+                      placeholder={`Ingredient ${index + 1}`}
+                      onChange={(e) => updateArray(setRecipeIngredients, index,e.target.value)} />
+
+                      <button className="btn btn--icon" onClick={() => removeFromArray(setRecipeIngredients, index)}>
+                        <FontAwesomeIcon icon={faX} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="popup__input__block">
