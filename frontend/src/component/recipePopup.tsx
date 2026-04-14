@@ -20,25 +20,26 @@ function RecipePopup({onClose}: PopupProps) {
   const [recipeIngredients, setRecipeIngredients] = useState<string[]>([""]);
   const [recipeNotes, setRecipeNotes] = useState<string>("");
 
-  const mediaInputRef = useRef<HTMLInputElement>(null);
+  const mediaInputRef = useRef<HTMLInputElement>(null); /* You’re telling TypeScript: "This pointer will eventually point to an Input tag." and its initial value is null*/
 
   const handleMediaAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if(!file) return;
 
-    const previewUrl = URL.createObjectURL(file);
+    const previewUrl = URL.createObjectURL(file); // This function creates a unique string pointer that points directly to the file in the browser’s RAM.
     setRecipeMedia((prev) => [...prev, {file, previewUrl}]);
   };
 
   const removeMedia = (index: number) => {
-    URL.revokeObjectURL(recipeMedia[index].previewUrl);
+    URL.revokeObjectURL(recipeMedia[index].previewUrl); // removing the object from the browser's memory
     removeFromArray(setRecipeMedia, index);
   }
 
+/*   we do <T,> with a comma so that the compilar doesnt think that this is an html tag but a template */
   const addToArray = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, defaultValue: T) => {setter((prev) => [...prev, defaultValue])}; 
 
   const removeFromArray = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, index: number) => {
-      setter((prev) => prev.filter((_, i) => i !== index));
+      setter((prev) => prev.filter((_, i) => i !== index)); /* the filter function gives us 2 values (item, index) so we name it (_,i) developers use an underscore _ as a universal signal for: "I am ignoring this variable."*/
   };
 
   const updateArray = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, index: number, value: T) => {
@@ -123,7 +124,7 @@ function RecipePopup({onClose}: PopupProps) {
               <div className="popup__input__block">
                 <div className="popup__input__label popup__input__label--row">
                   <p>Images / Videos(URLs)</p>
-                    <button className="btn btn--secondary" onClick={() => mediaInputRef.current?.click()}>
+                    <button className="btn btn--secondary" onClick={() => mediaInputRef.current?.click()}> // we pressing on the input field cuz its not visible to the user we check if its valid first
                       <FontAwesomeIcon icon={faPlus} /> Add Media
                     </button>
 
@@ -133,15 +134,15 @@ function RecipePopup({onClose}: PopupProps) {
                     style={{display: "none"}}
                     onChange={handleMediaAdd}/>
                 </div>
-                 { 
+                 { // why do we have the {} here what does that mean
                       recipeMedia.length === 0 ? (
                         <p className="popup__empty__text">No images or videos added yet</p>
                       ) : (
                         <div className="popup__media__list">
                           {recipeMedia.map((item, index) => (
-                            <div key={index} className="popup__media__item">
+                            <div key={index} className="popup__media__item"> // the key is so react knows which DOM element belongs to which data item in your array
                               {item.file.type.startsWith("video/") ? (
-                                <video src={item.previewUrl} controls className="popup__media__preview"></video>
+                                <video src={item.previewUrl} controls className="popup__media__preview"></video>// By just writing the word controls, you are telling the browser: "Hey, give the user the standard Play/Pause/Volume buttons." Without this, the video would just be a static image that the user can't interact with.
                               ) : (
                                 <img src={item.previewUrl} alt={item.file.name} className="popup__media__preview" />
                               )}
