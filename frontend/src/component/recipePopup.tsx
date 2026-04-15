@@ -52,10 +52,33 @@ function RecipePopup({onClose}: PopupProps) {
 
   const handleSave = async () => {
     
+    try{
+      const response = await fetch("/api/recipe/", {
+        method: "POST",
+        headers:{"Content-Type": "application/json"}, /* The Header: The "Envelope" instructions. It tells the server how to read the body. */
+        body: JSON.stringify({
+          name: recipeName,
+          notes: recipeNotes,
+          ingredients: recipeIngredients.filter(i => i.trim() !== ""),
+          steps: recipeSteps.filter(s => s.trim() !== ""),
+        })
+      });
+      if(response.ok){
+        recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
+        onClose();
+      }else {
+        const data = await response.json();
+        console.error("Save failed:", data.message);
+      }
+    } catch(error) {
+      console.error("Save failed", error);
+    }
+
+
 /*  FormData is a built-in Browser Class that handles all that "packaging" for you. 
     Why use it? You cannot put a binary File inside a JSON string. JSON only likes text. If you try to stringify a File, it turns into {} (empty).
     How it works: FormData creates a "Multipart" message. It’s like a shipping container with different compartments: */
-    const formData = new FormData(); 
+/*     const formData = new FormData(); 
 
     formData.append("name", recipeName);
     formData.append("notes", recipeNotes);
@@ -79,7 +102,7 @@ function RecipePopup({onClose}: PopupProps) {
       }
     } catch (error) {
       console.error("Save failed", error);
-    }
+    } */
 
   };
 
@@ -89,7 +112,7 @@ function RecipePopup({onClose}: PopupProps) {
         <div className="popup" onClick={(e) => e.stopPropagation()}>
 
             <div className="popup__title">
-                <p>Edit Recipe</p>
+                <p>Add Recipe</p>
                 <button onClick={onClose} className="btn"><FontAwesomeIcon icon={faX} /></button>
             </div>
 
