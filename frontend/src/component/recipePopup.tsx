@@ -10,11 +10,11 @@ interface PopupProps {
 function RecipePopup({onClose}: PopupProps) {
 
   interface MediaItem {
-    file: File;
+    file: File; /* It is a binary object that lives in the browser's memory */
     previewUrl: string;
   }
 
-  const [steps, setSteps] = useState<string[]>([""]);
+  const [recipeSteps, setRecipeSteps] = useState<string[]>([""]);
   const [recipeName, setRecipeName] = useState<string>("");
   const [recipeMedia, setRecipeMedia] = useState<MediaItem[]>([]);
   const [recipeIngredients, setRecipeIngredients] = useState<string[]>([""]);
@@ -51,9 +51,37 @@ function RecipePopup({onClose}: PopupProps) {
   };
 
   const handleSave = async () => {
+    
+/*  FormData is a built-in Browser Class that handles all that "packaging" for you. 
+    Why use it? You cannot put a binary File inside a JSON string. JSON only likes text. If you try to stringify a File, it turns into {} (empty).
+    How it works: FormData creates a "Multipart" message. It’s like a shipping container with different compartments: */
+    const formData = new FormData(); 
+
+    formData.append("name", recipeName);
+    formData.append("notes", recipeNotes);
+
+    formData.append("ingredients", JSON.stringify(recipeIngredients));
+    formData.append("steps", JSON.stringify(recipeSteps));
+
+    recipeMedia.forEach((item) => {
+      formData.append("images", item.file);
+    });
+
+    try {
+      const response = await fetch("/api/recipe/", {
+        method: "POST",
+        body: formData,
+      });
+
+      if(response.ok){
+        recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
+        onClose();
+      }
+    } catch (error) {
+      console.error("Save failed", error);
+    }
 
   };
-
 
   return (
     <> 
@@ -99,20 +127,20 @@ function RecipePopup({onClose}: PopupProps) {
               <div className="popup__input__block">
                 <div className="popup__input__label popup__input__label--row">
                   <p>Steps</p>
-                  <button className="btn btn--secondary" onClick={() => addToArray<string>(setSteps, "")}>
+                  <button className="btn btn--secondary" onClick={() => addToArray<string>(setRecipeSteps, "")}>
                     <FontAwesomeIcon icon={faPlus}/> Add Step
                   </button>
                 </div>
                 <div className="popup__steps">
-                  {steps.map((step, index) => (
+                  {recipeSteps.map((steps, index) => (
                     <div key={index} className="popup__step__row">
                       <span className="popup__step__number">{index + 1}</span>
                       <input type="text" 
-                      value={step} 
+                      value={steps} 
                       placeholder={`Step ${index + 1}`}
-                      onChange={(e) => updateArray(setSteps, index,e.target.value)} />
+                      onChange={(e) => updateArray(setRecipeSteps, index,e.target.value)} />
 
-                      <button className="btn btn--icon" onClick={() => removeFromArray(setSteps, index)}>
+                      <button className="btn btn--icon" onClick={() => removeFromArray(setRecipeSteps, index)}>
                         <FontAwesomeIcon icon={faX} />
                       </button>
                     </div>
@@ -124,7 +152,7 @@ function RecipePopup({onClose}: PopupProps) {
               <div className="popup__input__block">
                 <div className="popup__input__label popup__input__label--row">
                   <p>Images / Videos(URLs)</p>
-                    <button className="btn btn--secondary" onClick={() => mediaInputRef.current?.click()}> // we pressing on the input field cuz its not visible to the user we check if its valid first
+                    <button className="btn btn--secondary" onClick={() => mediaInputRef.current?.click()}> {/* // we pressing on the input field cuz its not visible to the user we check if its valid first */}
                       <FontAwesomeIcon icon={faPlus} /> Add Media
                     </button>
 
@@ -134,15 +162,15 @@ function RecipePopup({onClose}: PopupProps) {
                     style={{display: "none"}}
                     onChange={handleMediaAdd}/>
                 </div>
-                 { // why do we have the {} here what does that mean
+                 { /* why do we have the {} here what does that mean */
                       recipeMedia.length === 0 ? (
                         <p className="popup__empty__text">No images or videos added yet</p>
                       ) : (
                         <div className="popup__media__list">
                           {recipeMedia.map((item, index) => (
-                            <div key={index} className="popup__media__item"> // the key is so react knows which DOM element belongs to which data item in your array
+                            <div key={index} className="popup__media__item"> {/* // the key is so react knows which DOM element belongs to which data item in your array */}
                               {item.file.type.startsWith("video/") ? (
-                                <video src={item.previewUrl} controls className="popup__media__preview"></video>// By just writing the word controls, you are telling the browser: "Hey, give the user the standard Play/Pause/Volume buttons." Without this, the video would just be a static image that the user can't interact with.
+                                <video src={item.previewUrl} controls className="popup__media__preview"></video>/* // By just writing the word controls, you are telling the browser: "Hey, give the user the standard Play/Pause/Volume buttons." Without this, the video would just be a static image that the user can't interact with. */
                               ) : (
                                 <img src={item.previewUrl} alt={item.file.name} className="popup__media__preview" />
                               )}
@@ -164,7 +192,7 @@ function RecipePopup({onClose}: PopupProps) {
             </div>
 
             <div className="popup__action__buttons">
-              <button onClick={onClose} className="btn btn--primary">Save Changes</button>
+              <button onClick={handleSave} className="btn btn--primary">Save Changes</button>
               <button onClick={onClose} className="btn btn--secondary">Cancel</button>
             </div>
 
