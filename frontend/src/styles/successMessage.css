@@ -1,0 +1,54 @@
+
+/* CONTAINER */
+
+.successMessage__container{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: slideDown 0.5s ease-out forwards;
+
+}
+
+.successMessage__success{
+    padding: 10px 20px;
+    background-color: green;
+    border-color: rgb(0, 100, 0);
+}
+
+.successMessage__fail{
+    padding: 10px 20px;
+    background-color: red;
+    border-color: rgb(100, 0, 0);
+}
+
+/* MESSAGE */
+
+.successMessage__message{
+    font-family: inherit;
+    letter-spacing: 1px;
+    font-style: none;
+}
+
+.successMessage__message--success{
+    color: rgb(172, 255, 172);
+}
+
+.successMessage__message--fail{
+    color: rgb(255, 172, 172);
+}
+
+@keyframes slideDown {
+    from {
+        top: -100px;    /* Start above the screen */
+        opacity: 0;     /* Invisible */
+    }
+    to {
+        top: 20px;      /* End at 20px from top */
+        opacity: 1;     /* Fully visible */
+    }
+}

@@ -5,9 +5,10 @@ import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 interface PopupProps {
   onClose: () => void;
+  onSaveSuccess: (message: string, isSuccess: boolean) => void;
 }
 
-function RecipePopup({onClose}: PopupProps) {
+function RecipePopup({onClose, onSaveSuccess}: PopupProps) {
 
   interface MediaItem {
     file: File; /* It is a binary object that lives in the browser's memory */
@@ -65,13 +66,16 @@ function RecipePopup({onClose}: PopupProps) {
       });
       if(response.ok){
         recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
+        onSaveSuccess("Recipe created successfully!", true);
         onClose();
       }else {
         const data = await response.json();
+        onSaveSuccess("Failed to create recipe", false);
         console.error("Save failed:", data.message);
       }
     } catch(error) {
       console.error("Save failed", error);
+      onSaveSuccess("Network error occurred", false);
     }
 
 
