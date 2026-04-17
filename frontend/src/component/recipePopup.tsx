@@ -8,12 +8,13 @@ interface PopupProps {
   onSaveSuccess: (message: string, isSuccess: boolean) => void;
 }
 
+interface MediaItem {
+  file: File; /* It is a binary object that lives in the browser's memory */
+  previewUrl: string;
+}
+
 function RecipePopup({onClose, onSaveSuccess}: PopupProps) {
 
-  interface MediaItem {
-    file: File; /* It is a binary object that lives in the browser's memory */
-    previewUrl: string;
-  }
 
   const [recipeSteps, setRecipeSteps] = useState<string[]>([""]);
   const [recipeName, setRecipeName] = useState<string>("");
