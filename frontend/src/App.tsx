@@ -4,6 +4,7 @@ import Header from "./component/header"
 import Hero from "./component/hero"
 import RecipePopup from './component/recipePopup'
 import SuccessMessage from './component/successMessage';
+import RecipeCard from './component/recipeCard';
 
 function App() {
 
@@ -31,7 +32,8 @@ function App() {
         <SuccessMessage success={showStatus.success} message={showStatus.msg}/>
       )}
       <Header onAddClick={togglePopup}/>
-      <Hero onAddClick={togglePopup}/> 
+      {/* <Hero onAddClick={togglePopup}/>  */}
+      <RecipeCard/>
       {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage}/>)}
     </div>
     </>
