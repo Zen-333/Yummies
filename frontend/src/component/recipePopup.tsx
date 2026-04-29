@@ -2,7 +2,7 @@ import "../styles/recipePopup.css"
 import { useState, useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { Recipe } from "../../../backend/src/types/recipe";
+import type { Recipe } from "../../../backend/src/types/recipe";
 
 interface PopupProps {
   onClose: () => void;
