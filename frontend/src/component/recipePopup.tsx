@@ -2,10 +2,12 @@ import "../styles/recipePopup.css"
 import { useState, useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { Recipe } from "../../../backend/src/types/recipe";
 
 interface PopupProps {
   onClose: () => void;
   onSaveSuccess: (message: string, isSuccess: boolean) => void;
+  recipeSetArray:  React.Dispatch<React.SetStateAction<Recipe[]>>;
 }
 
 interface MediaItem {
@@ -13,7 +15,7 @@ interface MediaItem {
   previewUrl: string;
 }
 
-function RecipePopup({onClose, onSaveSuccess}: PopupProps) {
+function RecipePopup({onClose, onSaveSuccess, recipeSetArray}: PopupProps) {
 
 
   const [recipeSteps, setRecipeSteps] = useState<string[]>([""]);
@@ -68,6 +70,9 @@ function RecipePopup({onClose, onSaveSuccess}: PopupProps) {
       if(response.ok){
         recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
         onSaveSuccess("Recipe created successfully!", true);
+
+        addToArray<Recipe>(recipeSetArray, {name: recipeName, notes: recipeNotes, ingredients: recipeIngredients.filter(i => i.trim() !== ""), steps: recipeSteps.filter(s => s.trim() !== "")})
+
         onClose();
       }else {
         const data = await response.json();

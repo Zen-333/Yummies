@@ -5,9 +5,11 @@ import Hero from "./component/hero"
 import RecipePopup from './component/recipePopup'
 import SuccessMessage from './component/successMessage';
 import RecipeCard from './component/recipeCard';
+import { Recipe } from "../../backend/src/types/recipe";
 
 function App() {
 
+  const [recipies, setRecipies] = useState<Recipe[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [showStatus, setShowStatus] = useState<{show: boolean, msg: string, success: boolean}>({
     show: false,
@@ -33,8 +35,9 @@ function App() {
       )}
       <Header onAddClick={togglePopup}/>
       {/* <Hero onAddClick={togglePopup}/>  */}
-      <RecipeCard/>
-      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage}/>)}
+      {recipies.length > 0 && (<RecipeCard/>)}
+      
+      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} recipeSetArray={setRecipies}/>)}
     </div>
     </>
   )
