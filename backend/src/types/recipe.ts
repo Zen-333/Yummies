@@ -5,6 +5,9 @@ export type Recipe = {
     imagesURL?: Array<string>
     ingredients?: Array<string>
     steps?: Array<string>
+    timeHr?: Number
+    timeMi?: Number
+    cost?: Number
 }
 
 export type NewRecipe = Omit<Recipe, '_id'> 

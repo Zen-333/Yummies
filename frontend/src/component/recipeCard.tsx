@@ -1,12 +1,14 @@
 import "../styles/recipeCard.css"
 import type { Recipe } from "../../../backend/src/types/recipe"
 
-interface RecipeCard { 
+interface RecipeCardProps { 
   recipe: Recipe;
   index: Number;
  }
 
-function RecipeCard({recipe, index}: RecipeCard) {
+function RecipeCard({recipe, index}: RecipeCardProps) {
+
+  if(!recipe) return null;
 
   return ( 
       <>

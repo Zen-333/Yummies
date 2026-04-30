@@ -23,6 +23,9 @@ function RecipePopup({onClose, onSaveSuccess, recipeSetArray}: PopupProps) {
   const [recipeMedia, setRecipeMedia] = useState<MediaItem[]>([]);
   const [recipeIngredients, setRecipeIngredients] = useState<string[]>([""]);
   const [recipeNotes, setRecipeNotes] = useState<string>("");
+  const [recipeTimeHr, setRecipeTimeHr] = useState<Number>(0);
+  const [recipeTimeMi, setRecipeTimeMi] = useState<Number>(0);
+  const [recipeCost, setRecipeCost] = useState<Number>(0);
 
   const mediaInputRef = useRef<HTMLInputElement>(null); /* You’re telling TypeScript: "This pointer will eventually point to an Input tag." and its initial value is null*/
 
@@ -65,13 +68,17 @@ function RecipePopup({onClose, onSaveSuccess, recipeSetArray}: PopupProps) {
           notes: recipeNotes,
           ingredients: recipeIngredients.filter(i => i.trim() !== ""),
           steps: recipeSteps.filter(s => s.trim() !== ""),
+          timeHr: recipeTimeHr,
+          timeMi: recipeTimeMi,
+          cost: recipeCost
         })
       });
       if(response.ok){
         recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
         onSaveSuccess("Recipe created successfully!", true);
 
-        addToArray<Recipe>(recipeSetArray, {name: recipeName, notes: recipeNotes, ingredients: recipeIngredients.filter(i => i.trim() !== ""), steps: recipeSteps.filter(s => s.trim() !== "")})
+        const newRecipeFromServer: Recipe = await response.json();
+        addToArray<Recipe>(recipeSetArray, newRecipeFromServer);
 
         onClose();
       }else {
@@ -215,6 +222,21 @@ function RecipePopup({onClose, onSaveSuccess, recipeSetArray}: PopupProps) {
                         </div>
                       )
                     }
+              </div>
+              
+              <div className="popup__input__block">
+                <p className="popup__input__label">Recipe Time In Hours</p>
+                <input type="number" placeholder="e.g. 1" onChange={(e) => setRecipeTimeHr(Number(e.target.value))}/>
+              </div>
+
+              <div className="popup__input__block">
+                <p className="popup__input__label">Recipe Time In Minutes</p>
+                <input type="number" placeholder="e.g. 30" onChange={(e) => setRecipeTimeMi(Number(e.target.value))}/>
+              </div>
+
+              <div className="popup__input__block">
+                <p className="popup__input__label">Recipe Total Cost</p>
+                <input type="number" placeholder="e.g. 40" onChange={(e) => setRecipeCost(Number(e.target.value))}/>
               </div>
 
               <div className="popup__input__block">

@@ -9,7 +9,7 @@ import type { Recipe } from "../../backend/src/types/recipe";
 
 function App() {
 
-  const [recipies, setRecipies] = useState<Recipe[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [showStatus, setShowStatus] = useState<{show: boolean, msg: string, success: boolean}>({
     show: false,
@@ -34,10 +34,10 @@ function App() {
         <SuccessMessage success={showStatus.success} message={showStatus.msg}/>
       )}
       <Header onAddClick={togglePopup}/>
-      { recipies.length === 0 && (<Hero onAddClick={togglePopup}/>) }
-      {recipies.length > 0 && (<div className='app__recipeCard__list'>{(recipies.map((recipie, index) => ( <RecipeCard recipe={recipie} index={index}/>)))} </div>)}
+      { recipes.length === 0 && (<Hero onAddClick={togglePopup}/>) }
+      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r, i) => ( <RecipeCard recipe={r} index={i}/>)))} </div>)}
       
-      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} recipeSetArray={setRecipies}/>)}
+      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} recipeSetArray={setRecipes}/>)}
     </div>
     </>
   )

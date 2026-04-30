@@ -9,7 +9,7 @@ export const getAllRecipe = async (req: Request, res: Response) => {
 };
 
 export const addRecipe = (req: Request, res: Response) => {
-    const {name, notes, imagesURL, steps, ingredients} = req.body as NewRecipe;
+    const {name, notes, imagesURL, steps, ingredients, timeHr, timeMi, cost} = req.body as NewRecipe;
 
     if(!name || name.trim() === "")
     {
@@ -25,6 +25,9 @@ export const addRecipe = (req: Request, res: Response) => {
         imagesURL: imagesURL,
         steps: steps,
         ingredients: ingredients,
+        timeHr: timeHr,
+        timeMi: timeMi,
+        cost: cost
     }
     
     RecipeData.push(userRecipe);
@@ -32,7 +35,7 @@ export const addRecipe = (req: Request, res: Response) => {
 };
 
 export const updateRecipe = (req: Request, res: Response) => {
-    const {name, notes, imagesURL, steps, ingredients} = req.body as NewRecipe;
+    const {name, notes, imagesURL, steps, ingredients, timeHr, timeMi, cost} = req.body as NewRecipe;
     const { id } = req.params;
 
     const index = RecipeData.findIndex(item => item._id === id);
@@ -45,6 +48,9 @@ export const updateRecipe = (req: Request, res: Response) => {
         if(ingredients !== undefined && ingredients != RecipeData[index].ingredients)  RecipeData[index].ingredients = ingredients;
         if(steps !== undefined && steps != RecipeData[index].steps)  RecipeData[index].steps = steps;
         if(imagesURL !== undefined && imagesURL != RecipeData[index].imagesURL)  RecipeData[index].imagesURL = imagesURL;
+        if(timeHr !== undefined && timeHr != RecipeData[index].timeHr)  RecipeData[index].timeHr = timeHr;
+        if(timeMi !== undefined && timeMi != RecipeData[index].timeMi)  RecipeData[index].timeMi = timeMi;
+        if(cost !== undefined && cost != RecipeData[index].cost)  RecipeData[index].cost = cost;
 
         res.status(200).json({success: true, message: "RECIPE UPDATED SUCCESSFULY"});
         return;
