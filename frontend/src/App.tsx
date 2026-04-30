@@ -35,7 +35,7 @@ function App() {
       )}
       <Header onAddClick={togglePopup}/>
       { recipies.length === 0 && (<Hero onAddClick={togglePopup}/>) }
-      {recipies.length > 0 && (<div className='app__recipeCard__list'>{(recipies.map((recipie, index) => ( <RecipeCard/>)))} </div>)}
+      {recipies.length > 0 && (<div className='app__recipeCard__list'>{(recipies.map((recipie, index) => ( <RecipeCard recipe={recipie} index={index}/>)))} </div>)}
       
       {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} recipeSetArray={setRecipies}/>)}
     </div>
