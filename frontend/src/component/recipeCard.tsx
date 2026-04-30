@@ -14,10 +14,18 @@ function RecipeCard({recipe, index}: RecipeCardProps) {
       <>
       <div className="card">
         <div className="card__container">
-            {recipe.name}
+          <div className="card__title">
+              {recipe.name}
+          </div>
+          <div className="card__image">
+            {recipe.imagesURL && recipe.imagesURL.length > 0 ? (
+            <img src={recipe.imagesURL[0]} alt="" />): (<p>No Image Found</p>)}
+          </div>
+          <div className="card__variables__container">
+
+          </div>
         </div>
       </div>
-        
       </>
   );
 }
