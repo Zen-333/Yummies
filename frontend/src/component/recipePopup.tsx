@@ -77,8 +77,9 @@ function RecipePopup({onClose, onSaveSuccess, recipeSetArray}: PopupProps) {
         recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
         onSaveSuccess("Recipe created successfully!", true);
 
-        const newRecipeFromServer: Recipe = await response.json();
-        addToArray<Recipe>(recipeSetArray, newRecipeFromServer);
+        const data = await response.json();
+        const newRecipe: Recipe = data.recipies[data.recipies.length - 1];
+        addToArray<Recipe>(recipeSetArray, newRecipe);
 
         onClose();
       }else {
@@ -224,20 +225,23 @@ function RecipePopup({onClose, onSaveSuccess, recipeSetArray}: PopupProps) {
                     }
               </div>
               
-              <div className="popup__input__block">
-                <p className="popup__input__label">Recipe Time In Hours</p>
-                <input type="number" placeholder="e.g. 1" onChange={(e) => setRecipeTimeHr(Number(e.target.value))}/>
+            <div className="popup__input__block">
+              <p className="popup__input__label">Time & Cost</p>
+              <div className="popup__inline__fields">
+                <div className="popup__inline__field">
+                  <p className="popup__inline__label">Hours</p>
+                  <input type="number" min="0" placeholder="0" onChange={(e) => setRecipeTimeHr(Number(e.target.value))}/>
+                </div>
+                <div className="popup__inline__field">
+                  <p className="popup__inline__label">Minutes</p>
+                  <input type="number" min="0" max="59" placeholder="0" onChange={(e) => setRecipeTimeMi(Number(e.target.value))}/>
+                </div>
+                <div className="popup__inline__field">
+                  <p className="popup__inline__label">Cost (£)</p>
+                  <input type="number" min="0" placeholder="0" onChange={(e) => setRecipeCost(Number(e.target.value))}/>
+                </div>
               </div>
-
-              <div className="popup__input__block">
-                <p className="popup__input__label">Recipe Time In Minutes</p>
-                <input type="number" placeholder="e.g. 30" onChange={(e) => setRecipeTimeMi(Number(e.target.value))}/>
-              </div>
-
-              <div className="popup__input__block">
-                <p className="popup__input__label">Recipe Total Cost</p>
-                <input type="number" placeholder="e.g. 40" onChange={(e) => setRecipeCost(Number(e.target.value))}/>
-              </div>
+            </div>
 
               <div className="popup__input__block">
                 <p className="popup__input__label">Notes</p>

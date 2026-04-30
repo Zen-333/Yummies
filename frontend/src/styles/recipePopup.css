@@ -146,3 +146,21 @@ textarea:focus{
     border-radius: 4px;
     border: 1px solid rgba(128, 128, 128, 0.3);
 }
+
+.popup__inline__fields {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.popup__inline__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.popup__inline__label {
+    font-size: 12px;
+    color: #555;
+}
