@@ -16,18 +16,39 @@
 .card__container 
 {
     display: flex;
-    flex-direction: row;
-    background-color: white;
+    flex-direction: column;
+    height: inherit;
+    padding: 15px;
 }
 
 .card__title{
-
+    font-size: large;
 }
 
 .card__image{
-
+    align-items: center;
+    margin: auto;
+    height: auto;
+    
 }
 
 .card__variables__container{
+
+}
+
+.card__variables{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: space-between;   
+}
+
+.card__variable{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.card__variables__icon{
     
 }
