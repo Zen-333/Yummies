@@ -1,14 +1,15 @@
 import "../styles/recipeCard.css"
 import type { Recipe } from "../../../backend/src/types/recipe"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faSterlingSign, faListCheck, faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faSterlingSign, faListCheck, faCartShopping, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 interface RecipeCardProps { 
   recipe: Recipe;
   index: Number;
+  onDeletFunc: (index: number) => {};
  }
 
-function RecipeCard({recipe, index}: RecipeCardProps) {
+function RecipeCard({recipe, index, onDeletFunc}: RecipeCardProps) {
 
   if(!recipe) return null;
 
@@ -16,8 +17,14 @@ function RecipeCard({recipe, index}: RecipeCardProps) {
       <>
       <div className="card">
         <div className="card__container">
-          <div className="card__title">
-              {recipe.name}
+          <div className="card__header">
+            <div className="card__title">
+                {recipe.name}
+            </div>
+            <div className="card__buttons">
+              <button className="btn--secondary btn"><FontAwesomeIcon icon={faPenToSquare} /></button>
+              <button className="btn--secondary btn" onClick={onDeletFunc(index)}><FontAwesomeIcon icon={faTrashCan} /></button>
+            </div>
           </div>
           <div className="card__image">
             {recipe.imagesURL && recipe.imagesURL.length > 0 ? (

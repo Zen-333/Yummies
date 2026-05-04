@@ -19,6 +19,32 @@ function App() {
 
   const togglePopup = () => setIsPopupOpen(!isPopupOpen);
 
+  setRecipes(
+     try{
+      const response = await fetch("/api/recipe/", {
+        method: "GET",
+        headers:{"Content-Type": "application/json"}, /* The Header: The "Envelope" instructions. It tells the server how to read the body. */
+      });
+    } catch(error) {
+      console.error("Getting recipes failed", error);
+    }
+  );
+
+  const onDelet = (id: number) => {
+    try{
+      const response = await fetch("/api/recipe/", {
+        method: "DELET",
+        headers:{"Content-Type": "application/json"}, /* The Header: The "Envelope" instructions. It tells the server how to read the body. */
+        body: JSON.stringify({
+          _id: id,
+        })
+      });
+    } catch(error) {
+      console.error("Getting recipes failed", error);
+    }
+  );
+  }; 
+
   const triggerMessage = (message: string, isSuccess: boolean) => {
     setShowStatus({show: true, msg: message, success: isSuccess});
 
@@ -35,9 +61,9 @@ function App() {
       )}
       <Header onAddClick={togglePopup}/>
       { recipes.length === 0 && (<Hero onAddClick={togglePopup}/>) }
-      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r, i) => ( <RecipeCard recipe={r} index={i}/>)))} </div>)}
+      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r, i) => ( <RecipeCard recipe={r} _id={i} onDeletFunc={onDelet}/>)))} </div>)}
       
-      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} recipeSetArray={setRecipes}/>)}
+      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage}/>)}
     </div>
     </>
   )

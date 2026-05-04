@@ -21,6 +21,17 @@
     padding: 15px;
 }
 
+.card__header{
+ display: flex;
+ flex-direction: row;
+ justify-content: space-between;
+}
+
+.card__buttons{
+    display: flex;
+    gap: 12px;
+}
+
 .card__title{
     font-size: large;
 }
