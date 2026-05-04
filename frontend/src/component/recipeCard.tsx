@@ -5,11 +5,10 @@ import { faClock, faSterlingSign, faListCheck, faCartShopping, faPenToSquare, fa
 
 interface RecipeCardProps { 
   recipe: Recipe;
-  index: Number;
-  onDeletFunc: (index: number) => {};
+  onDeleteFunc: (id: string) => void;
  }
 
-function RecipeCard({recipe, index, onDeletFunc}: RecipeCardProps) {
+function RecipeCard({recipe, onDeleteFunc}: RecipeCardProps) {
 
   if(!recipe) return null;
 
@@ -23,7 +22,7 @@ function RecipeCard({recipe, index, onDeletFunc}: RecipeCardProps) {
             </div>
             <div className="card__buttons">
               <button className="btn--secondary btn"><FontAwesomeIcon icon={faPenToSquare} /></button>
-              <button className="btn--secondary btn" onClick={onDeletFunc(index)}><FontAwesomeIcon icon={faTrashCan} /></button>
+              <button className="btn--secondary btn" onClick={() => onDeleteFunc(recipe._id)}><FontAwesomeIcon icon={faTrashCan} /></button>
             </div>
           </div>
           <div className="card__image">

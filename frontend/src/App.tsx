@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './styles/App.css'
 import Header from "./component/header"
 import Hero from "./component/hero"
@@ -19,31 +19,50 @@ function App() {
 
   const togglePopup = () => setIsPopupOpen(!isPopupOpen);
 
-  setRecipes(
-     try{
-      const response = await fetch("/api/recipe/", {
-        method: "GET",
-        headers:{"Content-Type": "application/json"}, /* The Header: The "Envelope" instructions. It tells the server how to read the body. */
-      });
-    } catch(error) {
-      console.error("Getting recipes failed", error);
-    }
-  );
+  const updateRecipes = async() => {
+      try{
+        const response = await fetch("/api/recipe/");
+        if(response.ok){
+          const data = await response.json();
+          setRecipes([]);
+          setRecipes(data.recipies);
+        }
+      }catch(error){
+        console.error("Failed to fetch recipes", error);
+      }
+    };
 
-  const onDelet = (id: number) => {
+  useEffect(() => {
+    const fetchRecipes = async() => {
+      try{
+        const response = await fetch("/api/recipe/");
+        if(response.ok){
+          const data = await response.json();
+          setRecipes(data.recipies);
+        }
+      }catch(error){
+        console.error("Failed to fetch recipes", error);
+      }
+    };
+    fetchRecipes();
+  },[]);
+
+  const onDelete = async(id: string) => {
     try{
-      const response = await fetch("/api/recipe/", {
-        method: "DELET",
-        headers:{"Content-Type": "application/json"}, /* The Header: The "Envelope" instructions. It tells the server how to read the body. */
-        body: JSON.stringify({
-          _id: id,
-        })
+      const response = await fetch(`/api/recipe/${id}`, {
+        method:"DELETE",
       });
-    } catch(error) {
-      console.error("Getting recipes failed", error);
+      if(response.ok){
+        setRecipes(prev => prev.filter(r => r._id !== id));
+        triggerMessage("Recipe deleted", true);
+      }else {
+        triggerMessage("Failed to delete recipe", false);
+      }
+    } catch(error){
+      console.error("Delete failed", error);
+      triggerMessage("Network error occured", false);
     }
-  );
-  }; 
+  };
 
   const triggerMessage = (message: string, isSuccess: boolean) => {
     setShowStatus({show: true, msg: message, success: isSuccess});
@@ -61,9 +80,9 @@ function App() {
       )}
       <Header onAddClick={togglePopup}/>
       { recipes.length === 0 && (<Hero onAddClick={togglePopup}/>) }
-      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r, i) => ( <RecipeCard recipe={r} _id={i} onDeletFunc={onDelet}/>)))} </div>)}
+      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete}/>)))} </div>)}
       
-      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage}/>)}
+      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes}/>)}
     </div>
     </>
   )

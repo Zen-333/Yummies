@@ -7,6 +7,7 @@ import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
 interface PopupProps {
   onClose: () => void;
   onSaveSuccess: (message: string, isSuccess: boolean) => void;
+  onRecipeUpdated: () => void;
 }
 
 interface MediaItem {
@@ -14,7 +15,7 @@ interface MediaItem {
   previewUrl: string;
 }
 
-function RecipePopup({onClose, onSaveSuccess}: PopupProps) {
+function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated}: PopupProps) {
 
 
   const [recipeSteps, setRecipeSteps] = useState<string[]>([""]);
@@ -75,7 +76,7 @@ function RecipePopup({onClose, onSaveSuccess}: PopupProps) {
       if(response.ok){
         recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
         onSaveSuccess("Recipe created successfully!", true);
-
+        onRecipeUpdated();
        // const data = await response.json();
        // const newRecipe: Recipe = data.recipies[data.recipies.length - 1];
 
