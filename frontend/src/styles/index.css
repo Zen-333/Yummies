@@ -13,6 +13,7 @@ body {
 
     --BC-BTN-PRIMARY: rgba(3, 2, 19);
     --BC-BTN-SECONDARY: whitesmoke;
+    --BC-BTN-DANGER: rgb(172, 0, 0);
 
     --PADDING-BTN: 8px 20px; 
     --BORDER-RADIUS-BTN: 6px; 
@@ -43,5 +44,11 @@ body {
 .btn--secondary {
     background-color: var(--BC-BTN-SECONDARY);
     color: #0a0a0a;
+    border-color: #d0d0d0;
+}
+
+.btn--danger {
+    background-color: var(--BC-BTN-DANGER);
+    color: #ffffff;
     border-color: #d0d0d0;
 }

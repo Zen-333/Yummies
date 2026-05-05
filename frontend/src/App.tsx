@@ -6,6 +6,7 @@ import RecipePopup from './component/recipePopup'
 import SuccessMessage from './component/successMessage';
 import RecipeCard from './component/recipeCard';
 import type { Recipe } from "../../backend/src/types/recipe";
+import ActionConfirmation from './component/actionConfirmation';
 
 function App() {
 
@@ -81,7 +82,7 @@ function App() {
       <Header onAddClick={togglePopup}/>
       { recipes.length === 0 && (<Hero onAddClick={togglePopup}/>) }
       {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete}/>)))} </div>)}
-      
+      <ActionConfirmation/>
       {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes}/>)}
     </div>
     </>
