@@ -1,15 +1,21 @@
 import "../styles/actionConfirmation.css"
 
-function ActionConfirmation() {
+interface props{
+  msg: string,
+  onDanger: () => void,
+  onCancel: () => void
+}
+
+function ActionConfirmation({msg, onDanger, onCancel}: props) {
 
   return (
     <> 
     <div className="actionConfirm__overlay">
         <div className="actionConfirm__container">
-            <div className="actionConfirm__message"></div>
+            <div className="actionConfirm__message">{msg}</div>
             <div className="actionConfirm__buttons">
-                <button className="btn--secondary btn">Cancel</button>
-                <button className="btn--danger btn">Delete</button>
+                <button className="btn--secondary btn" onClick={onCancel}>Cancel</button>
+                <button className="btn--danger btn" onClick={onDanger}>Delete</button>
             </div>
         </div>
     </div>

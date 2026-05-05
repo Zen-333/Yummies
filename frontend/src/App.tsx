@@ -18,7 +18,18 @@ function App() {
     success: true
   });
 
+  const [showActionMessage, setShowActionMessage] = useState<{show: boolean, msg: string, onDanger: (id: string) => void, onCancel: () => void}>({
+    show: false,
+    msg: "",
+    onDanger: () => {},
+    onCancel: () => { setShowActionMessage(prev => ({...prev, show: false}))}
+  });
+
   const togglePopup = () => setIsPopupOpen(!isPopupOpen);
+
+  const setShowActionMessageState = (inShow: boolean, inMsg: string, inOnDanger: (id: string) => void) => {
+    setShowActionMessage(prev => ({...prev, show: inShow, msg: inMsg, onDanger: inOnDanger}))
+  }
 
   const updateRecipes = async() => {
       try{
@@ -82,7 +93,7 @@ function App() {
       <Header onAddClick={togglePopup}/>
       { recipes.length === 0 && (<Hero onAddClick={togglePopup}/>) }
       {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete}/>)))} </div>)}
-      <ActionConfirmation/>
+      { showActionMessage.show && (<ActionConfirmation msg='hellow' onDanger={showActionMessage.onDanger} onCancel={showActionMessage.onCancel}/>)}
       {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes}/>)}
     </div>
     </>
