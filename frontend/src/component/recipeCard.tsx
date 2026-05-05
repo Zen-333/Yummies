@@ -6,8 +6,8 @@ import { faClock, faSterlingSign, faListCheck, faCartShopping, faPenToSquare, fa
 interface RecipeCardProps { 
   recipe: Recipe;
   onDeleteFunc: (id: string) => void;
-  showActionMessageState:(inShow: boolean, inMsg: string, inOnDanger: (id: string) => void) => void;
- }
+  showActionMessageState: (inShow: boolean, inMsg: string, inOnDanger: () => void) => void;
+}
 
 function RecipeCard({recipe, onDeleteFunc, showActionMessageState}: RecipeCardProps) {
 
@@ -23,7 +23,7 @@ function RecipeCard({recipe, onDeleteFunc, showActionMessageState}: RecipeCardPr
             </div>
             <div className="card__buttons">
               <button className="btn--secondary btn"><FontAwesomeIcon icon={faPenToSquare} /></button>
-              <button className="btn--secondary btn" onClick={() => showActionMessageState(true, "Are you sure you want to delete the &{recipe.name} recipe?", onDeleteFunc(recipe._id))}><FontAwesomeIcon icon={faTrashCan} /></button>
+              <button className="btn--secondary btn" onClick={() => showActionMessageState(true, `Are you sure you want to delete the "${recipe.name}" recipe?`, () => onDeleteFunc(recipe._id))}><FontAwesomeIcon icon={faTrashCan} /></button>
             </div>
           </div>
           <div className="card__image">
