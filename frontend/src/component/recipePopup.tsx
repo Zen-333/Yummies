@@ -252,28 +252,28 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
               <div className="popup__inline__fields">
                 <div className="popup__inline__field">
                   <p className="popup__inline__label">Hours</p>
-                  <input type="number" min="0" placeholder="0" onChange={(e) => setRecipeTimeHr(Number(e.target.value))}/>
+                  <input type="number" min="0" value={recipeTimeHr} placeholder="0" onChange={(e) => setRecipeTimeHr(Number(e.target.value))}/>
                 </div>
                 <div className="popup__inline__field">
                   <p className="popup__inline__label">Minutes</p>
-                  <input type="number" min="0" max="59" placeholder="0" onChange={(e) => setRecipeTimeMi(Number(e.target.value))}/>
+                  <input type="number" min="0" max="59" value={recipeTimeMi} placeholder="0" onChange={(e) => setRecipeTimeMi(Number(e.target.value))}/>
                 </div>
                 <div className="popup__inline__field">
                   <p className="popup__inline__label">Cost (£)</p>
-                  <input type="number" min="0" placeholder="0" onChange={(e) => setRecipeCost(Number(e.target.value))}/>
+                  <input type="number" min="0" placeholder="0" value={recipeCost} onChange={(e) => setRecipeCost(Number(e.target.value))}/>
                 </div>
               </div>
             </div>
 
               <div className="popup__input__block">
                 <p className="popup__input__label">Notes</p>
-                <textarea rows={3} placeholder="Any extra tips or serving suggestions..." onChange={(e) => setRecipeNotes(e.target.value)}></textarea>
+                <textarea rows={3} value={recipeNotes} placeholder="Any extra tips or serving suggestions..." onChange={(e) => setRecipeNotes(e.target.value)}></textarea>
               </div>
 
             </div>
 
             <div className="popup__action__buttons">
-              <button onClick={handleSave} className="btn btn--primary">Save Changes</button>
+              <button onClick={handleSave} className="btn btn--primary">{isEditMode ? "Save Changes" : "Add Recipe"}</button>
               <button onClick={onClose} className="btn btn--secondary">Cancel</button>
             </div>
 
