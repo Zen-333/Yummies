@@ -1,5 +1,5 @@
 import "../styles/recipePopup.css"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
 import type { Recipe } from "../../../backend/src/types/recipe";
@@ -8,7 +8,6 @@ interface PopupProps {
   onClose: () => void;
   onSaveSuccess: (message: string, isSuccess: boolean) => void;
   onRecipeUpdated: () => void;
-  hasData: boolean;
   recipeData?: Recipe;
 }
 
@@ -17,8 +16,9 @@ interface MediaItem {
   previewUrl: string;
 }
 
-function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, hasData, recipeData}: PopupProps) {
+function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: PopupProps) {
 
+  const isEditMode = recipeData !== undefined;
 
   const [recipeSteps, setRecipeSteps] = useState<string[]>([""]);
   const [recipeName, setRecipeName] = useState<string>("");
@@ -31,45 +31,17 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, hasData, recipeDa
 
   const mediaInputRef = useRef<HTMLInputElement>(null); /* You’re telling TypeScript: "This pointer will eventually point to an Input tag." and its initial value is null*/
 
-  const checkForData = async() => {
-    if(hasData && recipeData?._id != undefined){
-      if(recipeData.steps != undefined)
-      {
-        setRecipeSteps(recipeData.steps);
-      }
-      if(recipeData.name != undefined)
-      {
-        setRecipeName(recipeData.name);
-      }
-      if(recipeData.imagesURL != undefined)
-      {
-        /* setRecipeMedia(recipeData.imagesURL); */
-      }
-      if(recipeData.ingredients != undefined)
-      {
-        setRecipeIngredients(recipeData.ingredients);
-      }
-      if(recipeData.notes != undefined)
-      {
-        setRecipeNotes(recipeData.notes);
-      }
-      if(recipeData.timeHr != undefined)
-      {
-        setRecipeTimeHr(recipeData.timeHr);
-      }
-      if(recipeData.timeMi != undefined)
-      {
-        setRecipeTimeMi(recipeData.timeMi);
-      }
-      if(recipeData.cost != undefined)
-      {
-        setRecipeCost(recipeData.cost);
-      }
+  useEffect(() => {
+   if (isEditMode && recipeData) {
+      setRecipeName(recipeData.name);
+      setRecipeSteps(recipeData.steps && recipeData.steps.length > 0 ? recipeData.steps : [""]);
+      setRecipeIngredients(recipeData.ingredients && recipeData.ingredients.length > 0 ? recipeData.ingredients : [""]);
+      setRecipeNotes(recipeData.notes ?? "");
+      setRecipeTimeHr(Number(recipeData.timeHr ?? 0));
+      setRecipeTimeMi(Number(recipeData.timeMi ?? 0));
+      setRecipeCost(Number(recipeData.cost ?? 0));
     }
-
-  };
-
-  checkForData();
+  }, []);
 
   const handleMediaAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -101,37 +73,46 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, hasData, recipeDa
 
   const handleSave = async () => {
     
-    try{
-      const response = await fetch("/api/recipe/", {
-        method: "POST",
-        headers:{"Content-Type": "application/json"}, /* The Header: The "Envelope" instructions. It tells the server how to read the body. */
-        body: JSON.stringify({
-          name: recipeName,
-          notes: recipeNotes,
-          ingredients: recipeIngredients.filter(i => i.trim() !== ""),
-          steps: recipeSteps.filter(s => s.trim() !== ""),
-          timeHr: recipeTimeHr,
-          timeMi: recipeTimeMi,
-          cost: recipeCost
-        })
-      });
-      if(response.ok){
-        recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
-        onSaveSuccess("Recipe created successfully!", true);
-        onRecipeUpdated();
-       // const data = await response.json();
-       // const newRecipe: Recipe = data.recipies[data.recipies.length - 1];
+    if(!recipeName.trim()){
+      onSaveSuccess("Please provide a recipe name", false);
+      return;
+    }
 
+    const body = JSON.stringify({
+      name: recipeName,
+      notes: recipeNotes,
+      ingredients: recipeIngredients.filter(i => i.trim() !== ""),
+      steps: recipeSteps.filter(s => s.trim() !== ""),
+      timeHr: recipeTimeHr,
+      timeMi: recipeTimeMi,
+      cost: recipeCost
+    });
+
+    const url = isEditMode ? `/api/recipe/${recipeData._id}` : "/api/recipe/";
+    const method = isEditMode ? "PUT" : "POST";
+
+    try {
+      const response = await fetch(url, {
+        method: method,
+        headers: {"Content-Type": "application/json"},
+        body: body
+      });
+
+      if (response.ok) {
+        recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
+        onSaveSuccess(isEditMode ? "Recipe updated successfully!" : "Recipe created successfully!", true);
+        onRecipeUpdated();
         onClose();
-      }else {
+      } else {
         const data = await response.json();
-        onSaveSuccess("Failed to create recipe", false);
+        onSaveSuccess(isEditMode ? "Failed to update recipe" : "Failed to create recipe", false);
         console.error("Save failed:", data.message);
       }
-    } catch(error) {
+    } catch (error) {
       console.error("Save failed", error);
       onSaveSuccess("Network error occurred", false);
     }
+  };
 
 
 /*  FormData is a built-in Browser Class that handles all that "packaging" for you. 
@@ -163,7 +144,7 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, hasData, recipeDa
       console.error("Save failed", error);
     } */
 
-  };
+ /*  }; */
 
   return (
     <> 
@@ -171,7 +152,7 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, hasData, recipeDa
         <div className="popup" onClick={(e) => e.stopPropagation()}>
 
             <div className="popup__title">
-                <p>Add Recipe</p>
+                <p>{isEditMode ? "Edit Recipe" : "Add Recipe"}</p>
                 <button onClick={onClose} className="btn"><FontAwesomeIcon icon={faX} /></button>
             </div>
 
@@ -179,7 +160,7 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, hasData, recipeDa
 
               <div className="popup__input__block">
                 <p className="popup__input__label">Recipe Name</p>
-                <input type="text" placeholder="e.g. Classic Pancakes" onChange={(e) => setRecipeName(e.target.value)}/>
+                <input type="text" value={recipeName} placeholder="e.g. Classic Pancakes" onChange={(e) => setRecipeName(e.target.value)}/>
               </div>
 
               <div className="popup__input__block">

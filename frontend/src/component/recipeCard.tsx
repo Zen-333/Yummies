@@ -7,7 +7,7 @@ interface RecipeCardProps {
   recipe: Recipe;
   onDeleteFunc: (id: string) => void;
   showActionMessageState: (inShow: boolean, inMsg: string, inOnDanger: () => void, inDangerStr: string) => void;
-  showEditPopup: (_id: string) => void;
+  showEditPopup: (recipe: Recipe) => void;
 }
 
 function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup}: RecipeCardProps) {
@@ -23,7 +23,7 @@ function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup
                 {recipe.name}
             </div>
             <div className="card__buttons">
-              <button className="btn--secondary btn" onClick={() => showEditPopup(recipe._id)}><FontAwesomeIcon icon={faPenToSquare} /></button>
+              <button className="btn--secondary btn" onClick={() => showEditPopup(recipe)}><FontAwesomeIcon icon={faPenToSquare} /></button>
               <button className="btn--secondary btn" onClick={() => showActionMessageState(true, `Are you sure you want to delete the "${recipe.name}" recipe?`, () => onDeleteFunc(recipe._id), "Delete")}><FontAwesomeIcon icon={faTrashCan} /></button>
             </div>
           </div>
@@ -33,10 +33,10 @@ function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup
           </div>
           <div className="card__variables__container">
               <div className="card__variables">
-                {recipe.timeHr && recipe.timeMi ? (<div className="card__variable"><FontAwesomeIcon icon={faClock} className="card__variables__icon"/><p> {recipe.timeHr}hr {recipe.timeMi}m </p></div>): (<div className="card__variable"><FontAwesomeIcon icon={faClock} className="card__variables__icon"/><p> 0hr 0m</p></div>)}
-                {recipe.cost ? (<div className="card__variable"><p><FontAwesomeIcon icon={faSterlingSign} className="card__variables__icon"/>{recipe.cost}</p></div>): (<div className="card__variable"><p><FontAwesomeIcon icon={faSterlingSign} className="card__variables__icon"/>0</p></div>)}
-                {recipe.steps ? (<div className="card__variable"><FontAwesomeIcon icon={faListCheck} className="card__variables__icon"/><p>{recipe.steps.length}</p></div>): (<div className="card__variable"><FontAwesomeIcon icon={faListCheck} className="card__variables__icon"/><p>0</p></div>)}
-                {recipe.ingredients ? (<div className="card__variable"><FontAwesomeIcon icon={faCartShopping} className="card__variables__icon"/><p>{recipe.ingredients.length}</p></div>): (<div className="card__variable"><FontAwesomeIcon icon={faCartShopping} className="card__variables__icon"/><p>0</p></div>)}
+                <div className="card__variable"><FontAwesomeIcon icon={faClock} className="card__variables__icon"/><p> {recipe.timeHr ?? 0}hr {recipe.timeMi ?? 0}m </p></div>
+                <div className="card__variable"><p><FontAwesomeIcon icon={faSterlingSign} className="card__variables__icon"/>{recipe.cost ?? 0}</p></div>
+                <div className="card__variable"><FontAwesomeIcon icon={faListCheck} className="card__variables__icon"/><p>{recipe.steps?.length ?? 0}</p></div>
+                <div className="card__variable"><FontAwesomeIcon icon={faCartShopping} className="card__variables__icon"/><p>{recipe.ingredients?.length ?? 0}</p></div>
               </div>
           </div>
         </div>

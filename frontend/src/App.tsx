@@ -11,9 +11,8 @@ import ActionConfirmation from './component/actionConfirmation';
 function App() {
 
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [currentRecipe, setCurrentRecipe] = useState<Recipe>();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [popupWithData, setPopupWithData] = useState(false);
+  const [editingRecipe, setEditingRecipe] = useState<Recipe | null>(null);
   const [showStatus, setShowStatus] = useState<{show: boolean, msg: string, success: boolean}>({
     show: false,
     msg: "",
@@ -32,26 +31,20 @@ function App() {
     dangerStr: "",
   });
 
-  const togglePopup = () => {
-    setIsPopupOpen(!isPopupOpen)
-    if(popupWithData) setPopupWithData(false);
+  const openAddPopup = () => {
+    setEditingRecipe(null);
+    setIsPopupOpen(true);
   };
 
-  const showPopupWithData = async(_id: string) => {
-    try{
-      const response = await fetch(`/api/recipe/${_id}`, {
-        method:"GET",
-      });
-      if(response.ok){
-        const data = await response.json();
-        setCurrentRecipe(data.recipe);
-        setPopupWithData(true);
-      }
-    }catch(error){
-      console.error("Failed to fetch recipe", error);
-    }  
+  const openEditPopup = (recipe: Recipe) => {
+    setEditingRecipe(recipe);
+    setIsPopupOpen(true);
+  };
 
-  }
+  const closePopup = () => {
+    setIsPopupOpen(false);
+    setEditingRecipe(null);
+  };
 
   const setShowActionMessageState = (inShow: boolean, inMsg: string, inOnDanger: () => void, inDangerStr: string) => {
     setShowActionMessage({ show: inShow, msg: inMsg, onDanger: inOnDanger, dangerStr: inDangerStr });
@@ -66,7 +59,6 @@ function App() {
         const response = await fetch("/api/recipe/");
         if(response.ok){
           const data = await response.json();
-          setRecipes([]);
           setRecipes(data.recipies);
         }
       }catch(error){
@@ -75,19 +67,8 @@ function App() {
     };
 
   useEffect(() => {
-    const fetchRecipes = async() => {
-      try{
-        const response = await fetch("/api/recipe/");
-        if(response.ok){
-          const data = await response.json();
-          setRecipes(data.recipies);
-        }
-      }catch(error){
-        console.error("Failed to fetch recipes", error);
-      }
-    };
-    fetchRecipes();
-  },[]);
+    updateRecipes();
+  }, []);
 
   const onDelete = async(id: string) => {
     try{
@@ -120,12 +101,11 @@ function App() {
       {showStatus.show && (
         <SuccessMessage success={showStatus.success} message={showStatus.msg}/>
       )}
-      <Header onAddClick={togglePopup}/>
-      { recipes.length === 0 && (<Hero onAddClick={togglePopup}/>) }
-      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={showPopupWithData}/>)))} </div>)}
+      <Header onAddClick={openAddPopup}/>
+      { recipes.length === 0 && (<Hero onAddClick={openAddPopup}/>) }
+      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup}/>)))} </div>)}
       { showActionMessage.show && (<ActionConfirmation msg={showActionMessage.msg} onDanger={() => {showActionMessage.onDanger(); hideActionMessage();}} onCancel={hideActionMessage} dangerStr={showActionMessage.dangerStr}/>)}
-      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes} hasData={false}/>)}
-      {popupWithData && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes} hasData={true} recipeData={currentRecipe}/>)}
+      {isPopupOpen && (<RecipePopup onClose={closePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes} recipeData={editingRecipe ?? undefined}/>)}
     </div>
     </>
   )
