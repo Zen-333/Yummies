@@ -2,11 +2,12 @@ import "../styles/actionConfirmation.css"
 
 interface props{
   msg: string,
+  dangerStr: string,
   onDanger: () => void,
   onCancel: () => void
 }
 
-function ActionConfirmation({msg, onDanger, onCancel}: props) {
+function ActionConfirmation({msg, onDanger, onCancel, dangerStr}: props) {
 
   return (
     <> 
@@ -15,7 +16,7 @@ function ActionConfirmation({msg, onDanger, onCancel}: props) {
             <div className="actionConfirm__message">{msg}</div>
             <div className="actionConfirm__buttons">
                 <button className="btn--secondary btn" onClick={onCancel}>Cancel</button>
-                <button className="btn--danger btn" onClick={onDanger}>Delete</button>
+                <button className="btn--danger btn" onClick={onDanger}>{dangerStr}</button>
             </div>
         </div>
     </div>

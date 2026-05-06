@@ -2,12 +2,14 @@ import "../styles/recipePopup.css"
 import { useState, useRef } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
-//import type { Recipe } from "../../../backend/src/types/recipe";
+import type { Recipe } from "../../../backend/src/types/recipe";
 
 interface PopupProps {
   onClose: () => void;
   onSaveSuccess: (message: string, isSuccess: boolean) => void;
   onRecipeUpdated: () => void;
+  hasData: boolean;
+  recipeData?: Recipe;
 }
 
 interface MediaItem {
@@ -15,7 +17,7 @@ interface MediaItem {
   previewUrl: string;
 }
 
-function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated}: PopupProps) {
+function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, hasData, recipeData}: PopupProps) {
 
 
   const [recipeSteps, setRecipeSteps] = useState<string[]>([""]);
@@ -28,6 +30,46 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated}: PopupProps) {
   const [recipeCost, setRecipeCost] = useState<Number>(0);
 
   const mediaInputRef = useRef<HTMLInputElement>(null); /* You’re telling TypeScript: "This pointer will eventually point to an Input tag." and its initial value is null*/
+
+  const checkForData = async() => {
+    if(hasData && recipeData?._id != undefined){
+      if(recipeData.steps != undefined)
+      {
+        setRecipeSteps(recipeData.steps);
+      }
+      if(recipeData.name != undefined)
+      {
+        setRecipeName(recipeData.name);
+      }
+      if(recipeData.imagesURL != undefined)
+      {
+        /* setRecipeMedia(recipeData.imagesURL); */
+      }
+      if(recipeData.ingredients != undefined)
+      {
+        setRecipeIngredients(recipeData.ingredients);
+      }
+      if(recipeData.notes != undefined)
+      {
+        setRecipeNotes(recipeData.notes);
+      }
+      if(recipeData.timeHr != undefined)
+      {
+        setRecipeTimeHr(recipeData.timeHr);
+      }
+      if(recipeData.timeMi != undefined)
+      {
+        setRecipeTimeMi(recipeData.timeMi);
+      }
+      if(recipeData.cost != undefined)
+      {
+        setRecipeCost(recipeData.cost);
+      }
+    }
+
+  };
+
+  checkForData();
 
   const handleMediaAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

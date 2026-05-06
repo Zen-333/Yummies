@@ -11,7 +11,9 @@ import ActionConfirmation from './component/actionConfirmation';
 function App() {
 
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [currentRecipe, setCurrentRecipe] = useState<Recipe>();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupWithData, setPopupWithData] = useState(false);
   const [showStatus, setShowStatus] = useState<{show: boolean, msg: string, success: boolean}>({
     show: false,
     msg: "",
@@ -22,16 +24,37 @@ function App() {
     show: boolean;
     msg: string;
     onDanger: () => void;
+    dangerStr: string;
   }>({
     show: false,
     msg: "",
     onDanger: () => {},
+    dangerStr: "",
   });
 
-  const togglePopup = () => setIsPopupOpen(!isPopupOpen);
+  const togglePopup = () => {
+    setIsPopupOpen(!isPopupOpen)
+    if(popupWithData) setPopupWithData(false);
+  };
 
-  const setShowActionMessageState = (inShow: boolean, inMsg: string, inOnDanger: () => void) => {
-    setShowActionMessage({ show: inShow, msg: inMsg, onDanger: inOnDanger });
+  const showPopupWithData = async(_id: string) => {
+    try{
+      const response = await fetch(`/api/recipe/${_id}`, {
+        method:"GET",
+      });
+      if(response.ok){
+        const data = await response.json();
+        setCurrentRecipe(data.recipe);
+        setPopupWithData(true);
+      }
+    }catch(error){
+      console.error("Failed to fetch recipe", error);
+    }  
+
+  }
+
+  const setShowActionMessageState = (inShow: boolean, inMsg: string, inOnDanger: () => void, inDangerStr: string) => {
+    setShowActionMessage({ show: inShow, msg: inMsg, onDanger: inOnDanger, dangerStr: inDangerStr });
   };
 
   const hideActionMessage = () => {
@@ -99,9 +122,10 @@ function App() {
       )}
       <Header onAddClick={togglePopup}/>
       { recipes.length === 0 && (<Hero onAddClick={togglePopup}/>) }
-      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState}/>)))} </div>)}
-      { showActionMessage.show && (<ActionConfirmation msg={showActionMessage.msg} onDanger={() => {showActionMessage.onDanger(); hideActionMessage();}} onCancel={hideActionMessage}/>)}
-      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes}/>)}
+      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={showPopupWithData}/>)))} </div>)}
+      { showActionMessage.show && (<ActionConfirmation msg={showActionMessage.msg} onDanger={() => {showActionMessage.onDanger(); hideActionMessage();}} onCancel={hideActionMessage} dangerStr={showActionMessage.dangerStr}/>)}
+      {isPopupOpen && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes} hasData={false}/>)}
+      {popupWithData && (<RecipePopup onClose={togglePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes} hasData={true} recipeData={currentRecipe}/>)}
     </div>
     </>
   )
