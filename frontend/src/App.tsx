@@ -7,6 +7,7 @@ import SuccessMessage from './component/successMessage';
 import RecipeCard from './component/recipeCard';
 import type { Recipe } from "../../backend/src/types/recipe";
 import ActionConfirmation from './component/actionConfirmation';
+import RecipeViewer from './component/recipeViewer';
 
 function App() {
 
@@ -102,9 +103,10 @@ function App() {
         <SuccessMessage success={showStatus.success} message={showStatus.msg}/>
       )}
       <Header onAddClick={openAddPopup}/>
-      { recipes.length === 0 && (<Hero onAddClick={openAddPopup}/>) }
+      {/* <RecipeViewer/> */}
+      {recipes.length === 0 && (<Hero onAddClick={openAddPopup}/>) }
       {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup}/>)))} </div>)}
-      { showActionMessage.show && (<ActionConfirmation msg={showActionMessage.msg} onDanger={() => {showActionMessage.onDanger(); hideActionMessage();}} onCancel={hideActionMessage} dangerStr={showActionMessage.dangerStr}/>)}
+      {showActionMessage.show && (<ActionConfirmation msg={showActionMessage.msg} onDanger={() => {showActionMessage.onDanger(); hideActionMessage();}} onCancel={hideActionMessage} dangerStr={showActionMessage.dangerStr}/>)}
       {isPopupOpen && (<RecipePopup onClose={closePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes} recipeData={editingRecipe ?? undefined}/>)}
     </div>
     </>
