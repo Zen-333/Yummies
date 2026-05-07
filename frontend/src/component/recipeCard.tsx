@@ -8,15 +8,16 @@ interface RecipeCardProps {
   onDeleteFunc: (id: string) => void;
   showActionMessageState: (inShow: boolean, inMsg: string, inOnDanger: () => void, inDangerStr: string) => void;
   showEditPopup: (recipe: Recipe) => void;
+  showRecipe: (recipe: Recipe) => void;
 }
 
-function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup}: RecipeCardProps) {
+function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup, showRecipe}: RecipeCardProps) {
 
   if(!recipe) return null;
 
   return ( 
       <>
-      <div className="card">
+      <div className="card" onClick={() => showRecipe(recipe)}>
         <div className="card__container">
           <div className="card__header">
             <div className="card__title">

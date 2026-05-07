@@ -13,6 +13,7 @@ function App() {
 
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isViewRecipeOpen, setIsViewRecipeOpen] = useState(false);
   const [editingRecipe, setEditingRecipe] = useState<Recipe | null>(null);
   const [showStatus, setShowStatus] = useState<{show: boolean, msg: string, success: boolean}>({
     show: false,
@@ -42,10 +43,19 @@ function App() {
     setIsPopupOpen(true);
   };
 
+  const openRecipe = (recipe: Recipe) => {
+    setEditingRecipe(recipe);
+    setIsViewRecipeOpen(true);
+  }
+
   const closePopup = () => {
     setIsPopupOpen(false);
     setEditingRecipe(null);
   };
+
+  const closeRecipeViewer = () => {
+    setIsViewRecipeOpen(false);
+  }
 
   const setShowActionMessageState = (inShow: boolean, inMsg: string, inOnDanger: () => void, inDangerStr: string) => {
     setShowActionMessage({ show: inShow, msg: inMsg, onDanger: inOnDanger, dangerStr: inDangerStr });
@@ -103,9 +113,9 @@ function App() {
         <SuccessMessage success={showStatus.success} message={showStatus.msg}/>
       )}
       <Header onAddClick={openAddPopup}/>
-      {/* <RecipeViewer/> */}
+      {isViewRecipeOpen && editingRecipe && (<RecipeViewer onClose={closeRecipeViewer} recipe={editingRecipe}/>)}
       {recipes.length === 0 && (<Hero onAddClick={openAddPopup}/>) }
-      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup}/>)))} </div>)}
+      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup} showRecipe={openRecipe}/>)))} </div>)}
       {showActionMessage.show && (<ActionConfirmation msg={showActionMessage.msg} onDanger={() => {showActionMessage.onDanger(); hideActionMessage();}} onCancel={hideActionMessage} dangerStr={showActionMessage.dangerStr}/>)}
       {isPopupOpen && (<RecipePopup onClose={closePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes} recipeData={editingRecipe ?? undefined}/>)}
     </div>
