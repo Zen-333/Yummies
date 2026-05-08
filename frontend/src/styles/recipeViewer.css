@@ -1,20 +1,53 @@
 .recipeViewer-overlay{
-
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
 .recipeViewer{
-
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    height: 90vh;
+    max-height: 90vh;
+    width: 600px;
+    max-width: 95ch;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .recipeViewer__title{
-
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0; /* never shrinks stays at the top */
+    padding: 20px 24px 16px;
+    font-size: 20px;
+    font-weight: 600;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .recipeViewer__body{
-
+    flex: 1; /* takes all remaining space */
+    overflow-y: auto; /* this is what scrolls */
+    padding: 8px 0;
+    margin: 10px 25px;
 }
 
 .recipeViewer__section{
+    display: flex;
+    flex-direction: column;
+}
+
+.recipeViewer__section-title{
 
 }
 

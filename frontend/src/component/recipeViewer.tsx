@@ -22,24 +22,28 @@ function RecipeViewer({onClose, recipe}: RecipeViewerProps) {
                 <div className="recipeViewer__body">
 
                     <div className="recipeViewer__section">
+                        <div className="recipeViewer__section-title">Ingredients</div>
                         <div className="recipeViewer__ingredients">
 
                         </div>
                     </div>
 
                     <div className="recipeViewer__section">
+                        <div className="recipeViewer__section-title">Steps</div>
                         <div className="recipeViewer__steps">
 
                         </div>
                     </div>
 
                     <div className="recipeViewer__section">
+                        <div className="recipeViewer__section-title">Images & Videos</div>
                         <div className="recipeViewer__media">
 
                         </div>
                     </div>
 
                     <div className="recipeViewer__section">
+                        <div className="recipeViewer__section-title">Time & Cost</div>
                         <div className="recipeViewer__timeCost">
 
                         </div>
@@ -47,6 +51,7 @@ function RecipeViewer({onClose, recipe}: RecipeViewerProps) {
                     </div>
 
                     <div className="recipeViewer__section">
+                        <div className="recipeViewer__section-title">Notes</div>
                         <div className="recipeViewer__notes">
 
                         </div>
