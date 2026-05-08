@@ -1,72 +1,220 @@
-.recipeViewer-overlay{
+.recipeViewer-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.55);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    backdrop-filter: blur(2px);
 }
 
-.recipeViewer{
+.recipeViewer {
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: #ffffff;
     height: 90vh;
     max-height: 90vh;
-    width: 600px;
-    max-width: 95ch;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    width: 620px;
+    max-width: 95vw;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
 }
 
-.recipeViewer__title{
+.recipeViewer__title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    flex-shrink: 0; /* never shrinks stays at the top */
+    flex-shrink: 0;
     padding: 20px 24px 16px;
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 700;
+    color: #0a0a0a;
     border-bottom: 1px solid #f0f0f0;
+    letter-spacing: -0.3px;
 }
 
-.recipeViewer__body{
-    flex: 1; /* takes all remaining space */
-    overflow-y: auto; /* this is what scrolls */
-    padding: 8px 0;
-    margin: 10px 25px;
+.recipeViewer__close-btn {
+    background: none !important; /* "!important" bad practice: it overrides any other CSS rule targeting the same property, regardless of specificity */
+    border: none !important;
+    color: #888;
+    font-size: 14px;
+    padding: 6px 8px !important;
+    transition: color 0.15s ease;
 }
 
-.recipeViewer__section{
+.recipeViewer__close-btn:hover {
+    color: #0a0a0a;
+    opacity: 1 !important;
+}
+
+.recipeViewer__stats {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    padding: 14px 24px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.recipeViewer__stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #444;
+    padding: 0 14px;
+}
+
+.recipeViewer__stat:first-child {
+    padding-left: 0;
+}
+
+.recipeViewer__stat-icon {
+    color: #888;
+    font-size: 12px;
+}
+
+.recipeViewer__stat-divider {
+    width: 1px;
+    height: 16px;
+    background-color: #ddd;
+    flex-shrink: 0;
+}
+
+.recipeViewer__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0 24px;
+}
+
+.recipeViewer__body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.recipeViewer__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.recipeViewer__body::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 2px;
+}
+
+.recipeViewer__section {
     display: flex;
     flex-direction: column;
+    gap: 12px;
+    padding: 20px 24px;
+    border-bottom: 1px solid #f5f5f5;
 }
 
-.recipeViewer__section-title{
-
+.recipeViewer__section:last-child {
+    border-bottom: none;
 }
 
-.recipeViewer__ingredients{
-
+.recipeViewer__section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #999;
 }
 
-.recipeViewer__steps{
-
+.recipeViewer__ingredients {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.recipeViewer__media{
-
+.recipeViewer__ingredient-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 14px;
+    background-color: #f4f4f4;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1a1a;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.recipeViewer__timeCost{
-
+.recipeViewer__ingredient-chip:hover {
+    background-color: #ebebeb;
+    border-color: #d0d0d0;
 }
 
-.recipeViewer__notes{
+.recipeViewer__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
+.recipeViewer__step {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.recipeViewer__step-number {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background-color: #0a0a0a;
+    color: #ffffff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+
+.recipeViewer__step-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #2a2a2a;
+    padding-top: 4px;
+    flex: 1;
+}
+
+.recipeViewer__media {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.recipeViewer__media-img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ebebeb;
+}
+
+.recipeViewer__notes {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #555;
+    background-color: #fafafa;
+    border-left: 3px solid #e0e0e0;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-style: italic;
 }

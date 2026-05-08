@@ -24,8 +24,8 @@ function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup
                 {recipe.name}
             </div>
             <div className="card__buttons">
-              <button className="btn--secondary btn" onClick={() => showEditPopup(recipe)}><FontAwesomeIcon icon={faPenToSquare} /></button>
-              <button className="btn--secondary btn" onClick={() => showActionMessageState(true, `Are you sure you want to delete the "${recipe.name}" recipe?`, () => onDeleteFunc(recipe._id), "Delete")}><FontAwesomeIcon icon={faTrashCan} /></button>
+              <button className="btn--secondary btn" onClick={(e) => {showEditPopup(recipe); e.stopPropagation();}}><FontAwesomeIcon icon={faPenToSquare} /></button>
+              <button className="btn--secondary btn" onClick={(e) => {showActionMessageState(true, `Are you sure you want to delete the "${recipe.name}" recipe?`, () => onDeleteFunc(recipe._id), "Delete"); e.stopPropagation();}}><FontAwesomeIcon icon={faTrashCan} /></button>
             </div>
           </div>
           <div className="card__image">
