@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
     "express": "^4.22.1"
   },
   "devDependencies": {
