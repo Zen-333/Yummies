@@ -19,7 +19,9 @@ export const getAllRecipe = async (req: Request, res: Response) => {
 };
 
 export const addRecipe = async (req: Request, res: Response) => {
-    const {name, notes, images_url, steps, ingredients, time_hr, time_mi, cost} = req.body as NewRecipe;
+    const {name, notes, images_url, steps, ingredients, time_hr, time_mi, cost} = req.body; //as NewRecipe;
+
+    console.log("Request Body:", req.body);
 
     if(!name || name.trim() === "")
     {
@@ -31,10 +33,10 @@ export const addRecipe = async (req: Request, res: Response) => {
     const {data, error} = await supabase
         .from('recipes')
         .insert([{name, notes, images_url, steps, ingredients, time_hr, time_mi, cost}])
-        .select()
-        .single();
+        .select();
 
     if(error){
+        console.error("SUPABASE ERROR:", error);
         res.status(500).json({success: false, message: error.message});
         return;
     }

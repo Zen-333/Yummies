@@ -83,12 +83,13 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
       notes: recipeNotes,
       ingredients: recipeIngredients.filter(i => i.trim() !== ""),
       steps: recipeSteps.filter(s => s.trim() !== ""),
-      timeHr: recipeTimeHr,
-      timeMi: recipeTimeMi,
-      cost: recipeCost
+      time_hr: recipeTimeHr,
+      time_mi: recipeTimeMi,
+      cost: recipeCost,
+      images_url: []
     });
 
-    const url = isEditMode ? `/api/recipe/${recipeData.id}` : "/api/recipe/";
+    const url = isEditMode ? `/api/recipe/${recipeData.id}` : "/api/recipe";
     const method = isEditMode ? "PUT" : "POST";
 
     try {
