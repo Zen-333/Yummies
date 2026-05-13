@@ -1,15 +1,25 @@
 import {Request, Response} from 'express';
 import { NewRecipe, Recipe } from '../types/recipe';
+import {supabase} from "../lib/supabase"
 
-let RecipeData: Array<Recipe> = [];
 
 export const getAllRecipe = async (req: Request, res: Response) => {
 
-    res.status(200).json({success: true, message: "GET ALL RECIPIES", recipies: RecipeData});
+    const {data, error} = await supabase
+        .from('recipes')
+        .select('*')
+        .order('created_at', {ascending: false});
+
+    if(error){
+        res.status(500).json({success: false, message: error.message});
+        return;
+    }
+
+    res.status(200).json({success: true, message: "GET ALL RECIPES", recipies: data});
 };
 
-export const addRecipe = (req: Request, res: Response) => {
-    const {name, notes, imagesURL, steps, ingredients, timeHr, timeMi, cost} = req.body as NewRecipe;
+export const addRecipe = async (req: Request, res: Response) => {
+    const {name, notes, images_url, steps, ingredients, time_hr, time_mi, cost} = req.body as NewRecipe;
 
     if(!name || name.trim() === "")
     {
@@ -18,61 +28,52 @@ export const addRecipe = (req: Request, res: Response) => {
         return;
     }
 
-    const userRecipe: Recipe = {
-        _id: String(RecipeData.length + 1),
-        name: name,
-        notes: notes,
-        imagesURL: imagesURL,
-        steps: steps,
-        ingredients: ingredients,
-        timeHr: timeHr,
-        timeMi: timeMi,
-        cost: cost
-    }
-    
-    RecipeData.push(userRecipe);
-    res.json({success: true, message: "RECIPE ADDED", recipies: RecipeData});
-};
+    const {data, error} = await supabase
+        .from('recipes')
+        .insert([{name, notes, images_url, steps, ingredients, time_hr, time_mi, cost}])
+        .select()
+        .single();
 
-export const updateRecipe = (req: Request, res: Response) => {
-    const {name, notes, imagesURL, steps, ingredients, timeHr, timeMi, cost} = req.body as NewRecipe;
-    const { id } = req.params;
-
-    const index = RecipeData.findIndex(item => item._id === id);
-    // findIndex returns -1 if not found
-
-    if(index !== -1)
-    {
-        if(name !== undefined && name != RecipeData[index].name)  RecipeData[index].name = name;
-        if(notes !== undefined && notes != RecipeData[index].notes)  RecipeData[index].notes = notes;
-        if(ingredients !== undefined && ingredients != RecipeData[index].ingredients)  RecipeData[index].ingredients = ingredients;
-        if(steps !== undefined && steps != RecipeData[index].steps)  RecipeData[index].steps = steps;
-        if(imagesURL !== undefined && imagesURL != RecipeData[index].imagesURL)  RecipeData[index].imagesURL = imagesURL;
-        if(timeHr !== undefined && timeHr != RecipeData[index].timeHr)  RecipeData[index].timeHr = timeHr;
-        if(timeMi !== undefined && timeMi != RecipeData[index].timeMi)  RecipeData[index].timeMi = timeMi;
-        if(cost !== undefined && cost != RecipeData[index].cost)  RecipeData[index].cost = cost;
-
-        res.status(200).json({success: true, message: "RECIPE UPDATED SUCCESSFULY"});
+    if(error){
+        res.status(500).json({success: false, message: error.message});
         return;
     }
 
-    res.status(404).json({success: false, message: "COUDN'T UPDATE RECIPE"});
+    res.status(201).json({success: true, message: "RECIPE ADDED", recipe: data});
 };
 
-export const deleteRecipe = (req: Request, res: Response) => {
+export const updateRecipe = async (req: Request, res: Response) => {
+    const {id} = req.params;
+    const updates = req.body as Partial<NewRecipe>;
 
-    const { id } = req.params;
+    const {data, error} = await supabase
+    .from('recipes')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
 
-    const index = RecipeData.findIndex(item => item._id === id);
-    // findIndex returns -1 if not found
-
-    if(index !== -1)
-    {
-        RecipeData.splice(index, 1)
-        res.status(200).json({success: true, message: "RECIPE DELETED", id: id});
+    if(error){
+        res.status(404).json({success: false, message: "COULDN'T UPDATE RECIPE"});
         return;
     }
 
-    res.status(404).json({success: false, message: "INVALID RECIPE ID", id: id});
+    res.status(200).json({success: true, message: "RECIPE UPDATED SUCCESSFULLY", recipe: data});
+};
 
+export const deleteRecipe = async (req: Request, res: Response) => {
+
+    const { id } = req.params;
+
+    const {error} = await supabase
+    .from('recipes')
+    .delete()
+    .eq('id',id);
+
+    if(error){
+        res.status(404).json({success: false, message: "INVALID RECIPE ID", id});
+        return;
+    }
+
+    res.status(200).json({success: true, message: "RECIPE DELETED", id});
 };

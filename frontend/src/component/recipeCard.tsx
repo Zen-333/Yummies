@@ -25,16 +25,16 @@ function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup
             </div>
             <div className="card__buttons">
               <button className="btn--secondary btn" onClick={(e) => {showEditPopup(recipe); e.stopPropagation();}}><FontAwesomeIcon icon={faPenToSquare} /></button>
-              <button className="btn--secondary btn" onClick={(e) => {showActionMessageState(true, `Are you sure you want to delete the "${recipe.name}" recipe?`, () => onDeleteFunc(recipe._id), "Delete"); e.stopPropagation();}}><FontAwesomeIcon icon={faTrashCan} /></button>
+              <button className="btn--secondary btn" onClick={(e) => {showActionMessageState(true, `Are you sure you want to delete the "${recipe.name}" recipe?`, () => onDeleteFunc(recipe.id), "Delete"); e.stopPropagation();}}><FontAwesomeIcon icon={faTrashCan} /></button>
             </div>
           </div>
           <div className="card__image">
-            {recipe.imagesURL && recipe.imagesURL.length > 0 ? (
-            <img src={recipe.imagesURL[0]} alt="" />): (<p>No Images Found</p>)}
+            {recipe.images_url && recipe.images_url.length > 0 ? (
+            <img src={recipe.images_url[0]} alt="" />): (<p>No Images Found</p>)}
           </div>
           <div className="card__variables__container">
               <div className="card__variables">
-                <div className="card__variable"><FontAwesomeIcon icon={faClock} className="card__variables__icon"/><p> {recipe.timeHr ?? 0}hr {recipe.timeMi ?? 0}m </p></div>
+                <div className="card__variable"><FontAwesomeIcon icon={faClock} className="card__variables__icon"/><p> {recipe.time_hr ?? 0}hr {recipe.time_mi ?? 0}m </p></div>
                 <div className="card__variable"><p><FontAwesomeIcon icon={faSterlingSign} className="card__variables__icon"/>{recipe.cost ?? 0}</p></div>
                 <div className="card__variable"><FontAwesomeIcon icon={faListCheck} className="card__variables__icon"/><p>{recipe.steps?.length ?? 0}</p></div>
                 <div className="card__variable"><FontAwesomeIcon icon={faCartShopping} className="card__variables__icon"/><p>{recipe.ingredients?.length ?? 0}</p></div>

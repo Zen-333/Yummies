@@ -26,7 +26,7 @@ function RecipeViewer({onClose, recipe}: RecipeViewerProps) {
                     <div className="recipeViewer__stats">
                         <div className="recipeViewer__stat">
                             <FontAwesomeIcon icon={faClock} className="recipeViewer__stat-icon"/>
-                            <span>{Number(recipe.timeHr) > 0 ? `${recipe.timeHr}hr ` : ""}{Number(recipe.timeMi) > 0 ? `${recipe.timeMi}m` : ""}{!recipe.timeHr && !recipe.timeMi ? "—" : ""}</span>
+                            <span>{Number(recipe.time_hr) > 0 ? `${recipe.time_hr}hr ` : ""}{Number(recipe.time_mi) > 0 ? `${recipe.time_mi}m` : ""}{!recipe.time_hr && !recipe.time_mi ? "—" : ""}</span>
                         </div>
                         <div className="recipeViewer__stat-divider"/>
                         <div className="recipeViewer__stat">
@@ -75,11 +75,11 @@ function RecipeViewer({onClose, recipe}: RecipeViewerProps) {
                     )}
 
                     {/* Images */}
-                    {recipe.imagesURL && recipe.imagesURL.length > 0 && (
+                    {recipe.images_url && recipe.images_url.length > 0 && (
                         <div className="recipeViewer__section">
                             <div className="recipeViewer__section-title">Images & Videos</div>
                             <div className="recipeViewer__media">
-                                {recipe.imagesURL.map((url, index) => (
+                                {recipe.images_url.map((url, index) => (
                                     <img key={index} src={url} alt={`${recipe.name} ${index + 1}`} className="recipeViewer__media-img"/>
                                 ))}
                             </div>

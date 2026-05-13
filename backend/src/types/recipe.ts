@@ -1,14 +1,15 @@
 export type Recipe = {
-    readonly _id: string
+    readonly id: string
+    user_id?: string
     name: string
     notes?: string
-    imagesURL?: Array<string>
+    images_url?: Array<string>
     ingredients?: Array<string>
     steps?: Array<string>
-    timeHr?: Number
-    timeMi?: Number
-    cost?: Number
+    time_hr?: number
+    time_mi?: number
+    cost?: number
+    created_at?: string
 }
 
-export type NewRecipe = Omit<Recipe, '_id'> 
-// this creates a new type coping all the variables inside Recipe but leaving out _id
+export type NewRecipe = Omit<Recipe, 'id' | 'user_id' | 'created_at'>

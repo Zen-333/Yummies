@@ -37,8 +37,8 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
       setRecipeSteps(recipeData.steps && recipeData.steps.length > 0 ? recipeData.steps : [""]);
       setRecipeIngredients(recipeData.ingredients && recipeData.ingredients.length > 0 ? recipeData.ingredients : [""]);
       setRecipeNotes(recipeData.notes ?? "");
-      setRecipeTimeHr(Number(recipeData.timeHr ?? 0));
-      setRecipeTimeMi(Number(recipeData.timeMi ?? 0));
+      setRecipeTimeHr(Number(recipeData.time_hr ?? 0));
+      setRecipeTimeMi(Number(recipeData.time_mi ?? 0));
       setRecipeCost(Number(recipeData.cost ?? 0));
     }
   }, []);
@@ -88,7 +88,7 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
       cost: recipeCost
     });
 
-    const url = isEditMode ? `/api/recipe/${recipeData._id}` : "/api/recipe/";
+    const url = isEditMode ? `/api/recipe/${recipeData.id}` : "/api/recipe/";
     const method = isEditMode ? "PUT" : "POST";
 
     try {
