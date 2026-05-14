@@ -8,6 +8,7 @@ import RecipeCard from './component/recipeCard';
 import type { Recipe } from "../../backend/src/types/recipe";
 import ActionConfirmation from './component/actionConfirmation';
 import RecipeViewer from './component/recipeViewer';
+import { supabase } from './lib/supabase'
 
 function App() {
 
@@ -66,8 +67,12 @@ function App() {
   };
 
   const updateRecipes = async() => {
+    const {data: {session}} = await supabase.auth.getSession()
+    if(!session) return
       try{
-        const response = await fetch("/api/recipe/");
+        const response = await fetch("/api/recipe/",{
+          headers: {'Authorization': `Bearer ${session.access_token}`}
+        });
         if(response.ok){
           const data = await response.json();
           setRecipes(data.recipies);
@@ -82,9 +87,12 @@ function App() {
   }, []);
 
   const onDelete = async(id: string) => {
+    const {data: {session}} = await supabase.auth.getSession()
+    if(!session) return;
     try{
       const response = await fetch(`/api/recipe/${id}`, {
         method:"DELETE",
+        headers: {'Authorization': `Bearer ${session.access_token}`}
       });
       if(response.ok){
         setRecipes(prev => prev.filter(r => r.id !== id));

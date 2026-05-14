@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
 import type { Recipe } from "../../../backend/src/types/recipe";
+import { supabase } from '../lib/supabase'
 
 interface PopupProps {
   onClose: () => void;
@@ -92,10 +93,13 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
     const url = isEditMode ? `/api/recipe/${recipeData.id}` : "/api/recipe";
     const method = isEditMode ? "PUT" : "POST";
 
+    const {data: {session}} = await supabase.auth.getSession()
+    if(!session) return;
+
     try {
       const response = await fetch(url, {
         method: method,
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json",'Authorization': `Bearer ${session.access_token}`},
         body: body
       });
 
