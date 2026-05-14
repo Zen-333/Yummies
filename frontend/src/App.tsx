@@ -87,7 +87,7 @@ function App() {
         method:"DELETE",
       });
       if(response.ok){
-        setRecipes(prev => prev.filter(r => r._id !== id));
+        setRecipes(prev => prev.filter(r => r.id !== id));
         triggerMessage("Recipe deleted", true);
       }else {
         triggerMessage("Failed to delete recipe", false);
@@ -115,7 +115,7 @@ function App() {
       <Header onAddClick={openAddPopup}/>
       {isViewRecipeOpen && editingRecipe && (<RecipeViewer onClose={closeRecipeViewer} recipe={editingRecipe}/>)}
       {recipes.length === 0 && (<Hero onAddClick={openAddPopup}/>) }
-      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r._id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup} showRecipe={openRecipe}/>)))} </div>)}
+      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r.id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup} showRecipe={openRecipe}/>)))} </div>)}
       {showActionMessage.show && (<ActionConfirmation msg={showActionMessage.msg} onDanger={() => {showActionMessage.onDanger(); hideActionMessage();}} onCancel={hideActionMessage} dangerStr={showActionMessage.dangerStr}/>)}
       {isPopupOpen && (<RecipePopup onClose={closePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes} recipeData={editingRecipe ?? undefined}/>)}
     </div>
