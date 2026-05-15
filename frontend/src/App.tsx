@@ -9,9 +9,11 @@ import type { Recipe } from "../../backend/src/types/recipe";
 import ActionConfirmation from './component/actionConfirmation';
 import RecipeViewer from './component/recipeViewer';
 import { supabase } from './lib/supabase'
+import { useAuth } from './context/AuthContext' 
 
 function App() {
 
+  const { user, session } = useAuth()  
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isViewRecipeOpen, setIsViewRecipeOpen] = useState(false);
@@ -67,7 +69,6 @@ function App() {
   };
 
   const updateRecipes = async() => {
-    const {data: {session}} = await supabase.auth.getSession()
     if(!session) return
       try{
         const response = await fetch("/api/recipe/",{
@@ -84,7 +85,7 @@ function App() {
 
   useEffect(() => {
     updateRecipes();
-  }, []);
+  }, [user, session]);
 
   const onDelete = async(id: string) => {
     const {data: {session}} = await supabase.auth.getSession()

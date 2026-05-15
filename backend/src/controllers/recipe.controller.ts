@@ -51,6 +51,7 @@ export const updateRecipe = async (req: AuthRequest, res: Response) => {
     const {data, error} = await supabase
     .from('recipes')
     .update(updates)
+    .eq('id', id)
     .eq('user_id', req.userId)
     .select()
     .single();
@@ -70,6 +71,7 @@ export const deleteRecipe = async (req: AuthRequest, res: Response) => {
     const {error} = await supabase
     .from('recipes')
     .delete()
+    .eq('id', id)
     .eq('user_id',req.userId);
 
     if(error){
