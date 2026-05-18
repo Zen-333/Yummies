@@ -12,8 +12,7 @@ import { supabase } from './lib/supabase'
 import { useAuth } from './context/AuthContext' 
 
 function App() {
-
-  const { user, session } = useAuth()  
+  const { user, session, loading } = useAuth()  
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isViewRecipeOpen, setIsViewRecipeOpen] = useState(false);
@@ -115,6 +114,7 @@ function App() {
     }, 3000);
   };
 
+  if(loading) return null
   return (
     <> 
     <div className="app-contain">
