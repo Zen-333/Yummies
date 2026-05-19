@@ -83,6 +83,10 @@ function App() {
     };
 
   useEffect(() => {
+    if(!user){
+      setRecipes([]);
+      return;
+    }
     updateRecipes();
   }, [user, session]);
 
