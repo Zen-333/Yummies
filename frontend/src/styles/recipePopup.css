@@ -41,6 +41,25 @@
     padding: 8px 0;
 }
 
+.popup__media__item--new {
+    position: relative;
+}
+
+.popup__media__item--new::after {
+    content: "new";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    background-color: #0a0a0a;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 1px 4px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
 .popup__action__buttons{
     display: flex;
     flex-direction: row-reverse;

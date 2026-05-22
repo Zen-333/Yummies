@@ -21,6 +21,8 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
 
   const isEditMode = recipeData !== undefined;
 
+  const [existingImages, setExistingImages] = useState<string[]>([]); 
+  const [newMedia, setNewMedia] = useState<MediaItem[]>([]);    
   const [recipeSteps, setRecipeSteps] = useState<string[]>([""]);
   const [recipeName, setRecipeName] = useState<string>("");
   const [recipeMedia, setRecipeMedia] = useState<MediaItem[]>([]);
@@ -41,6 +43,7 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
       setRecipeTimeHr(Number(recipeData.time_hr ?? 0));
       setRecipeTimeMi(Number(recipeData.time_mi ?? 0));
       setRecipeCost(Number(recipeData.cost ?? 0));
+      setExistingImages(recipeData.images_url ?? []);
     }
   }, []);
 
