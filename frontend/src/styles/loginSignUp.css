@@ -18,8 +18,8 @@
 
 }
 
-.loginSignUp__tab-active{
-
+.active{
+    background-color: rgb(228, 228, 228);
 }
 
 .loginSignUp__form{
@@ -38,18 +38,10 @@
 
 }
 
-.loginSignUp__submit-btn{
-
-}
-
 .loginSignUp__oauth-section{
 
 }
 
 .loginSignUp__separator{
 
-}
-
-.loginSignUp__google-btn{
-    
 }

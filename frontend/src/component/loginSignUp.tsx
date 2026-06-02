@@ -1,9 +1,24 @@
 import {useState} from "react"
 import "../styles/loginSignUp.css";
+import { useAuth } from "../context/AuthContext"
 
 function LoginSignUp() {
 
     const [isLogin, setIsLogin] = useState(true);
+    const {signInWithGoogle} = useAuth()
+
+    const onLogin = () => 
+    {
+
+    }
+
+    const setLoginActive = () => {
+      setIsLogin(true);
+    }
+
+    const setDeactivateLogin = () => {
+      setIsLogin(false);
+    }
 
  return (
     <div className="loginSignUp__overlay">
@@ -14,12 +29,12 @@ function LoginSignUp() {
         <div className="loginSignUp__tabs">
           <button 
             type="button"
-            className={`loginSignUp__tab ${isLogin ? '-active' : ''}`}>
+            className={`btn--secondary btn ${isLogin ? 'active' : ''}`} onClick={setLoginActive}>
             Login
           </button>
           <button 
             type="button"
-            className={`loginSignUp__tab ${!isLogin ? '-active' : ''}`}>
+            className={`btn--secondary btn ${!isLogin ? 'active' : ''}`} onClick={setDeactivateLogin}>
             Sign Up
           </button>
         </div>
@@ -46,7 +61,7 @@ function LoginSignUp() {
           </div>
 
           {/* Primary Submit Button */}
-          <button type="submit" className="loginSignUp__submit-btn">
+          <button type="submit" className="btn--primary btn" onClick={onLogin}>
             Login
           </button>
         </form>
@@ -58,7 +73,8 @@ function LoginSignUp() {
           </div>
           <button 
             type="button" 
-            className="loginSignUp__google-btn">
+            className="btn--secondary btn"
+            onClick={signInWithGoogle}>
             Continue with Google
           </button>
         </div>

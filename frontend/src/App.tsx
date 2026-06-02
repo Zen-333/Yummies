@@ -8,11 +8,13 @@ import RecipeCard from './component/recipeCard';
 import type { Recipe } from "../../backend/src/types/recipe";
 import ActionConfirmation from './component/actionConfirmation';
 import RecipeViewer from './component/recipeViewer';
+import LoginSignUp from "./component/loginSignUp";
 import { supabase } from './lib/supabase'
 import { useAuth } from './context/AuthContext' 
 
 function App() {
   const { user, session, loading } = useAuth()  
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isViewRecipeOpen, setIsViewRecipeOpen] = useState(false);
@@ -34,6 +36,10 @@ function App() {
     onDanger: () => {},
     dangerStr: "",
   });
+
+  const onShowLogin = () => {
+    setIsLoginOpen(!isLoginOpen);
+  }
 
   const openAddPopup = () => {
     setEditingRecipe(null);
@@ -125,7 +131,8 @@ function App() {
       {showStatus.show && (
         <SuccessMessage success={showStatus.success} message={showStatus.msg}/>
       )}
-      <Header onAddClick={openAddPopup}/>
+      <Header onAddClick={openAddPopup} onShowLogin={onShowLogin}/>
+      {isLoginOpen && (<LoginSignUp/>)}
       {isViewRecipeOpen && editingRecipe && (<RecipeViewer onClose={closeRecipeViewer} recipe={editingRecipe}/>)}
       {recipes.length === 0 && (<Hero onAddClick={openAddPopup}/>) }
       {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r.id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup} showRecipe={openRecipe}/>)))} </div>)}

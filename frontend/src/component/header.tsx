@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBlender, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../context/AuthContext"
 
-interface HeaderProps { onAddClick: () => void; }
+interface HeaderProps { onAddClick: () => void; onShowLogin: () => void;}
 
-function Header({onAddClick}: HeaderProps) {
+function Header({onAddClick, onShowLogin}: HeaderProps) {
   const {user, signInWithGoogle, signOut} = useAuth()
 
   return (
@@ -26,8 +26,8 @@ function Header({onAddClick}: HeaderProps) {
                             Sign Out
                         </button>
                     ) : (
-                        <button className="btn--secondary btn" onClick={signInWithGoogle}>
-                            Login with Google
+                        <button className="btn--secondary btn" onClick={onShowLogin}>
+                            Login
                         </button>
                     )}
                 </div>
