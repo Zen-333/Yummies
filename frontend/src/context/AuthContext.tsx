@@ -53,7 +53,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Returns null on success, or an error message string on failure.
     // If an avatarFile is provided, it uploads it to the 'avatars' bucket and
     // saves the public URL into the user's metadata so it's accessible anywhere.
-    const signUpWithEmail = async (email: string, password: string, avatarFile?: File): Promise<string | null> => {
+    const signUpWithEmail = async (email: string, password: string, avatarFile?: File): Promise<string | null> => 
+    {
         const { data, error } = await supabase.auth.signUp({ email, password })
 
         if (error) return error.message
@@ -67,22 +68,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 .from('avatars')
                 .upload(filePath, avatarFile, { cacheControl: '3600', upsert: true })
 
-            if (uploadError) {
-                // Avatar upload failed but account was created — not fatal.
-                // Return null (success) but the avatar just won't be set.
+            if (!uploadError && uploadData) {
+                const { data: urlData } = supabase.storage
+                    .from('avatars')
+                    .getPublicUrl(uploadData.path)
+
+                const avatarUrl = urlData.publicUrl
+
+                // Store in auth metadata (accessible via user.user_metadata.avatar_url)
+                await supabase.auth.updateUser({ data: { avatar_url: avatarUrl } })
+
+                // Also update the profiles table row that the trigger just created
+                await supabase
+                    .from('profiles')
+                    .update({ avatar_url: avatarUrl })
+                    .eq('user_id', data.user.id)
+            } else if (uploadError) {
                 console.error('Avatar upload failed:', uploadError.message)
-                return null
+                // Not fatal — account created, avatar just won't be set
             }
-
-            const { data: urlData } = supabase.storage
-                .from('avatars')
-                .getPublicUrl(uploadData.path)
-
-            // Store the avatar URL in the user's metadata so you can access it
-            // anywhere via supabase.auth.getUser() → user.user_metadata.avatar_url
-            await supabase.auth.updateUser({
-                data: { avatar_url: urlData.publicUrl }
-            })
         }
 
         return null
