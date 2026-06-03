@@ -132,7 +132,7 @@ function App() {
         <SuccessMessage success={showStatus.success} message={showStatus.msg}/>
       )}
       <Header onAddClick={openAddPopup} onShowLogin={onShowLogin}/>
-      {isLoginOpen && (<LoginSignUp/>)}
+      {isLoginOpen && (<LoginSignUp onClose={onShowLogin}/>)}
       {isViewRecipeOpen && editingRecipe && (<RecipeViewer onClose={closeRecipeViewer} recipe={editingRecipe}/>)}
       {recipes.length === 0 && (<Hero onAddClick={openAddPopup}/>) }
       {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r.id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup} showRecipe={openRecipe}/>)))} </div>)}
