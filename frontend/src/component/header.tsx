@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext"
 interface HeaderProps { onAddClick: () => void; onShowLogin: () => void;}
 
 function Header({onAddClick, onShowLogin}: HeaderProps) {
-  const {user, signInWithGoogle, signOut} = useAuth()
+  const {user, signOut} = useAuth()
 
   return (
     <> 

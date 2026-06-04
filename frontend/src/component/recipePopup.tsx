@@ -310,7 +310,7 @@ return (
                       ) : (
                         <img src={item.previewUrl} alt={item.file.name} className="popup__media__preview" />
                       )}
-                      <button className="btn btn--icon" onClick={() => removeNewMedia(index)}>
+                      <button className="btn btn--icon" onClick={() => removeMedia(index)}>
                         <FontAwesomeIcon icon={faX} />
                       </button>
                     </div>
