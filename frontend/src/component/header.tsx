@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBlender, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../context/AuthContext"
 
-interface HeaderProps { onAddClick: () => void; onShowLogin: () => void;}
+interface HeaderProps { onAddClick: () => void; onShowLogin: () => void; onEditProfile: () => void}
 
-function Header({onAddClick, onShowLogin}: HeaderProps) {
-  const {user, signOut} = useAuth()
+function Header({onAddClick, onShowLogin, onEditProfile}: HeaderProps) {
+  const {user} = useAuth()
 
   return (
     <> 
@@ -22,8 +22,8 @@ function Header({onAddClick, onShowLogin}: HeaderProps) {
                         </button>
                     )}
                     {user ? (
-                        <button className="btn--secondary btn" onClick={signOut}>
-                            Sign Out
+                        <button className="btn--secondary btn" onClick={onEditProfile}>
+                            Profile
                         </button>
                     ) : (
                         <button className="btn--secondary btn" onClick={onShowLogin}>

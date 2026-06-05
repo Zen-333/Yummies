@@ -11,10 +11,12 @@ import RecipeViewer from './component/recipeViewer';
 import LoginSignUp from "./component/loginSignUp";
 import { supabase } from './lib/supabase'
 import { useAuth } from './context/AuthContext' 
+import AccountOptions from './component/accountOptions';
 
 function App() {
   const { user, session, loading } = useAuth()  
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isAccountOptionsOpen, setIsAccountOptionsOpen] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isViewRecipeOpen, setIsViewRecipeOpen] = useState(false);
@@ -39,6 +41,14 @@ function App() {
 
   const onShowLogin = () => {
     setIsLoginOpen(!isLoginOpen);
+  } 
+
+  const onShowAccountOptions = () => {
+    setIsAccountOptionsOpen(true);
+  }
+
+  const onCloseAccountOptions = () => {
+    setIsAccountOptionsOpen(false);
   }
 
   const openAddPopup = () => {
@@ -131,7 +141,8 @@ function App() {
       {showStatus.show && (
         <SuccessMessage success={showStatus.success} message={showStatus.msg}/>
       )}
-      <Header onAddClick={openAddPopup} onShowLogin={onShowLogin}/>
+      <Header onAddClick={openAddPopup} onShowLogin={onShowLogin} onEditProfile={onShowAccountOptions}/>
+      {isAccountOptionsOpen && (<AccountOptions onClose={onCloseAccountOptions}/>)}
       {isLoginOpen && (<LoginSignUp onClose={onShowLogin}/>)}
       {isViewRecipeOpen && editingRecipe && (<RecipeViewer onClose={closeRecipeViewer} recipe={editingRecipe}/>)}
       {recipes.length === 0 && (<Hero onAddClick={openAddPopup}/>) }
