@@ -8,7 +8,7 @@ interface LoginSignUpProps {
     onClose: () => void
 }
 
-function LoginSignUp({ onClose }: LoginSignUpProps) {
+function LoginSignUp({ onClose}: LoginSignUpProps) {
 
     const [isLogin, setIsLogin] = useState(true)
     const [email, setEmail] = useState("")

@@ -5,11 +5,17 @@ import { useAuth } from "../context/AuthContext"
 
 interface AccountOptionsprops{
   onClose: () => void;
+  onEdit: () => void
 }
 
-function AccountOptions({onClose}: AccountOptionsprops) {
+function AccountOptions({onClose, onEdit}: AccountOptionsprops) {
   const {signOut} = useAuth()
  
+  const editProfile = () => {
+    onEdit();
+    onClose();
+  }
+
   const onSignOut = () => {
     signOut();
     onClose();
@@ -25,7 +31,7 @@ function AccountOptions({onClose}: AccountOptionsprops) {
           </div>
 
           <div className="accountOptions__section">
-            <button type="button" className="btn accountOptions__btn"><span className="accountOptions__icon"><FontAwesomeIcon icon={faGear} /></span>Edit Profile</button>
+            <button type="button" className="btn accountOptions__btn" onClick={editProfile}><span className="accountOptions__icon"><FontAwesomeIcon icon={faGear} /></span>Edit Profile</button>
           </div>
 
           <div className="accountOptions__section">
