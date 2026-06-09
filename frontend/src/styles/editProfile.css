@@ -1,0 +1,137 @@
+/* ==========================================================================
+   1. MODAL OVERLAY & CONTAINER (Centered Popup Matrix)
+   ========================================================================== */
+.editProfile__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4); /* Soft darkened backdrop layer */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Ensured position above the dashboard card grid */
+}
+
+.editProfile__container {
+    background-color: #ffffff;
+    border-radius: 16px;
+    width: 480px;
+    max-width: 90vw;
+    padding: 32px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   2. HEADER SEGMENT (Title & Close Button Axis)
+   ========================================================================== */
+.editProfile__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.editProfile__title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0c0d0e;
+    margin: 0;
+}
+
+/* Close '✕' Button layout rules */
+.editProfile__header .btn {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: #8a8f95;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease;
+}
+
+.editProfile__header .btn:hover {
+    color: #212529;
+}
+
+/* ==========================================================================
+   3. AVATAR DISPLAY ZONE
+   ========================================================================== */
+.editProfile__avatar-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+.editProfile__avatar-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #f1f3f5;
+}
+
+/* ==========================================================================
+   4. FORM FIELDS & LABELS
+   ========================================================================== */
+.editProfile__form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.editProfile__field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.editProfile__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.editProfile__input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    font-size: 14px;
+    color: #495057;
+    outline: none;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.editProfile__input:focus {
+    background-color: #ffffff;
+    border-color: #ced4da;
+}
+
+/* ==========================================================================
+   5. ACTIONS CONTROLS GRID (Delete Left / Cancel & Save Right)
+   ========================================================================== */
+.editProfile__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Push Cancel and Save Buttons completely to the right flank */
+.editProfile__danger-zone {
+    margin-right: auto;
+}
+
+.editProfile__actions .btn:active {
+    transform: scale(0.98);
+}
