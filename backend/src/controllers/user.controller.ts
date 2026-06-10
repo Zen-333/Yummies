@@ -14,6 +14,7 @@ export const deleteAccount = async (req: AuthRequest, res: Response) => {
     if(error)
     {
         res.status(500).json({success: false, message: error.message});
+        return;
     }
 
     res.status(200).json({seccess: true, message: "Account deleted"});

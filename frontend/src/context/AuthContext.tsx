@@ -116,7 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if(avatarFile)
         {
-            const ext = avatarFile.name.split('_').pop() ?? 'jpg';
+            const ext = avatarFile.name.split('.').pop() ?? 'jpg';
             const filePath = `${user.id}/avatar.${ext}`
 
             const {data: uploadData, error: uploadError} = await supabase.storage
@@ -153,15 +153,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const {data: {session}} = await supabase.auth.getSession();
         if(!session) return 'Not authenticated'
 
-        const response = await fetch('api/user/account', {
+        const response = await fetch('/api/user/account', {
             method: 'DELETE',
-            headers: {'Authorization': `Bearer &{session.access.token}`}
+            headers: {'Authorization': `Bearer ${session.access_token}`}
         })
 
         if(!response.ok)
         {
-            const data = await response.json()
-            return data.message
+            try{
+                const data = await response.json();
+                return data.message ?? "Failed to delete account"
+            }catch
+            {
+                return `server error: ${response.status}`
+            }
         }
 
         await supabase.auth.signOut();
@@ -169,7 +174,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, session, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut }}>
+        <AuthContext.Provider value={{ user, session, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut, getProfile, updateProfile, deleteAccount }}>
             {children}
         </AuthContext.Provider>
     )

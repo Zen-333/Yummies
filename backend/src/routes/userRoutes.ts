@@ -1,5 +1,5 @@
 import express from "express"
-import {deleteAccount} from "./controllers/user.controller";
+import {deleteAccount} from "../controllers/user.controller";
 import {requireAuth} from "../middleware/auth.middleware"
 
 const router = express.Router();

@@ -67,6 +67,7 @@ function EditProfile({onClose}: editProfileProps) {
         const errorMsg = await deleteAccount();
         setIsDeleting(false);
         if(errorMsg) setError(errorMsg);
+        onClose();
     }
 
     const showAvatar = avatarPreview ?? currentAvatarUrl;
