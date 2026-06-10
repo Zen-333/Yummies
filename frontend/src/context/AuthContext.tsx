@@ -10,6 +10,9 @@ interface AuthContextType {
     signInWithEmail: (email: string, password: string) => Promise<string | null>
     signUpWithEmail: (email: string, password: string, avatarFile?: File) => Promise<string | null>
     signOut: () => Promise<void>
+    getProfile: () => Promise<{ display_name: string | null; avatar_url: string | null } | null>
+    updateProfile: (displayName: string, avatarFile?: File) => Promise<string | null>
+    deleteAccount: () => Promise<string | null>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -94,6 +97,75 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const signOut = async () => {
         await supabase.auth.signOut()
+    }
+
+    const getProfile = async () => {
+        const {data, error} = await supabase
+            .from('profiles')
+            .select('display_name, avatar_url')
+            .eq('user_id', user?.id)
+            .single()
+        if(error) return null
+        return data;
+    }
+
+    const updateProfile = async (displayName: string, avatarFile?: File): Promise<string | null> => {
+        if(!user) return 'Not authenticated';
+
+        let avatarUrl: string | undefined;
+
+        if(avatarFile)
+        {
+            const ext = avatarFile.name.split('_').pop() ?? 'jpg';
+            const filePath = `${user.id}/avatar.${ext}`
+
+            const {data: uploadData, error: uploadError} = await supabase.storage
+                .from('avatars')
+                .upload(filePath, avatarFile, {cacheControl: '3600', upsert: true});
+            
+            if(uploadError) return uploadError.message;
+
+            const {data: urlData} = supabase.storage
+                .from('avatars')
+                .getPublicUrl(uploadData.path)
+            
+            avatarUrl = urlData.publicUrl;    
+        }
+
+        const updates: {display_name: string; avatar_url?: string} = {display_name: displayName}
+        if(avatarUrl) updates.avatar_url = avatarUrl;
+
+        const {error} = await supabase
+            .from('profiles')
+            .update(updates)
+            .eq('user_id', user.id);
+
+        if(error) return error.message;
+
+        if(avatarUrl) {
+            await supabase.auth.updateUser({data: {avatar_Url: avatarUrl}})
+        }
+
+        return null
+    }
+
+    const deleteAccount = async (): Promise<string | null> => {
+        const {data: {session}} = await supabase.auth.getSession();
+        if(!session) return 'Not authenticated'
+
+        const response = await fetch('api/user/account', {
+            method: 'DELETE',
+            headers: {'Authorization': `Bearer &{session.access.token}`}
+        })
+
+        if(!response.ok)
+        {
+            const data = await response.json()
+            return data.message
+        }
+
+        await supabase.auth.signOut();
+        return null;
     }
 
     return (
