@@ -78,8 +78,8 @@ function EditProfile({onClose, showActionMessageState}: editProfileProps) {
     const showAvatar = avatarPreview ?? currentAvatarUrl;
 
     return (
-        <div className="editProfile__overlay" onClick={onClose}>
-            <div className="editProfile__container" onClick={(e) => e.stopPropagation()}>
+        <div className="editProfile__overlay">
+            <div className="editProfile__container">
                 
                 <div className="editProfile__header">
                     <h2 className="editProfile__title">Edit Profile</h2>
