@@ -6,9 +6,10 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons"
 
 interface editProfileProps{
     onClose: () => void;
+    showActionMessageState: (inShow: boolean, inMsg: string, inOnDanger: () => void, inDangerStr: string) => void;
 }
 
-function EditProfile({onClose}: editProfileProps) {
+function EditProfile({onClose, showActionMessageState}: editProfileProps) {
 
     const {getProfile, updateProfile, deleteAccount} = useAuth();
 
@@ -61,12 +62,16 @@ function EditProfile({onClose}: editProfileProps) {
         onClose();
     }
 
-    const handleDelete = async () => {
-        if(!window.confirm("Permanently delete your account? this cannot be undone.")) return;
-        setIsDeleting(true);
-        const errorMsg = await deleteAccount();
-        setIsDeleting(false);
-        if(errorMsg) setError(errorMsg);
+    const handleDeleteClick = () => {
+        showActionMessageState(
+            true,
+            "Permanently delete your account? All your recipes and data will be gone",
+            async () => {
+                const errorMsg = await deleteAccount();
+                if(errorMsg) setError(errorMsg);
+            },
+            "Delete Account"
+        );
         onClose();
     }
 
@@ -114,25 +119,11 @@ function EditProfile({onClose}: editProfileProps) {
                             />
                         </div>
 
-                        <div className="editProfile__field-group">
-                            <label htmlFor="editProfile__input-avatarUrl" className="editProfile__label">
-                                Profile Photo URL
-                            </label>
-                            <input 
-                                id="editProfile__input-avatarUrl"
-                                type="text" 
-                                placeholder="Avatar image URL" 
-                                defaultValue=""
-                                required
-                                className="editProfile__input"
-                            />
-                        </div>
-
                     </div>
 
                     <div className="editProfile__actions">
                         <div className="editProfile__danger-zone">
-                            <button type="button" className="btn btn--danger" onClick={handleDelete} disabled={isDeleting}>
+                            <button type="button" className="btn btn--danger" onClick={handleDeleteClick} disabled={isDeleting}>
                                 {isDeleting ? "Deleting..." : "Delete Account"}
                             </button>
                         </div>

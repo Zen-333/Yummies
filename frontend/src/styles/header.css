@@ -32,3 +32,43 @@
     gap: 12px;
 }
 
+/* ==========================================================================
+   UPDATED AVATAR SIZES
+   ========================================================================== */
+
+.header__avatar-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 50%;
+    /* 1. Bumped up container size from 36px to 44px */
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: opacity 0.15s ease;
+}
+
+.header__avatar-btn:hover {
+    opacity: 0.85; /* Subtle micro-interaction on hover */
+}
+
+.header__avatar-img {
+    /* 2. Matched image size exactly to the wrapper container */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e0e0e0;
+}
+
+.header__avatar-icon {
+    /* 3. Increased default fallback icon font size from 28px to 38px */
+    font-size: 38px;
+    color: #555;
+    width: 100%;
+    height: 100%;
+}

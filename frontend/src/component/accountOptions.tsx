@@ -9,7 +9,7 @@ interface AccountOptionsprops{
 }
 
 function AccountOptions({onClose, onEdit}: AccountOptionsprops) {
-  const {signOut} = useAuth()
+  const {signOut, profile} = useAuth()
  
   const editProfile = () => {
     onEdit();
@@ -26,8 +26,7 @@ function AccountOptions({onClose, onEdit}: AccountOptionsprops) {
       <div className="accountOptions__overlay" onClick={onClose}>
         <div className="accountOptions__container" onClick={(e) => e.stopPropagation()}>
           <div className="accountOptions__section accountOptions__header">
-            <p className="accountOptions__name">Zen</p>
-            <p className="accountOptions__myAccount">My Account</p>
+            <p className="accountOptions__name">{profile?.display_name ?? "My Account"}</p>
           </div>
 
           <div className="accountOptions__section">

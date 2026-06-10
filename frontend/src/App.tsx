@@ -153,7 +153,7 @@ function App() {
       )}
       <Header onAddClick={openAddPopup} onShowLogin={onShowLogin} onEditProfile={onShowAccountOptions}/>
       {isAccountOptionsOpen && (<AccountOptions onClose={onCloseAccountOptions} onEdit={onShowEditProfile}/>)}
-      {isEditProfileOpen && (<EditProfile onClose={onHideEditProfile}/>)}
+      {isEditProfileOpen && (<EditProfile onClose={onHideEditProfile} showActionMessageState={setShowActionMessageState}/>)}
       {isLoginOpen && (<LoginSignUp onClose={onShowLogin}/>)}
       {isViewRecipeOpen && editingRecipe && (<RecipeViewer onClose={closeRecipeViewer} recipe={editingRecipe}/>)}
       {recipes.length === 0 && (<Hero onAddClick={openAddPopup}/>) }

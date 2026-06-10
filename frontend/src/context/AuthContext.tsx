@@ -13,15 +13,31 @@ interface AuthContextType {
     getProfile: () => Promise<{ display_name: string | null; avatar_url: string | null } | null>
     updateProfile: (displayName: string, avatarFile?: File) => Promise<string | null>
     deleteAccount: () => Promise<string | null>
+    profile: { display_name: string | null; avatar_url: string | null } | null
+    refreshProfile: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
 
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+    
     const [user, setUser] = useState<User | null>(null)
     const [session, setSession] = useState<Session | null>(null)
     const [loading, setLoading] = useState(true)
+    const [profile, setProfile] = useState<{ display_name: string | null; avatar_url: string | null } | null>(null)
+    
+    const refreshProfile = async () => {
+        const {data: {session: currentSession}} = await supabase.auth.getSession()
+        if(!currentSession) {setProfile(null); return}
+        const {data} = await supabase
+            .from('profiles')
+            .select('display_name, avatar_url')
+            .eq('user_id', currentSession.user.id)
+            .single()
+        setProfile(data ?? null);
+    }
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -34,6 +50,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setSession(session)
             setUser(session?.user ?? null)
             setLoading(false)
+
+            if(session)
+            {
+                supabase
+                    .from('profiles')
+                    .select('display_name, avatar_url')
+                    .eq('user_id', session.user.id)
+                    .single()
+                    .then(({data}) => setProfile(data ?? null))
+            } else{
+                setProfile(null);
+            }
         })
 
         return () => subscription.unsubscribe()
@@ -141,11 +169,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .eq('user_id', user.id);
 
         if(error) return error.message;
+        await refreshProfile();
 
         if(avatarUrl) {
             await supabase.auth.updateUser({data: {avatar_Url: avatarUrl}})
         }
-
+        
         return null
     }
 
@@ -174,7 +203,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, session, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut, getProfile, updateProfile, deleteAccount }}>
+        <AuthContext.Provider value={{ user, session, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut, getProfile, updateProfile, deleteAccount, profile, refreshProfile }}>
             {children}
         </AuthContext.Provider>
     )

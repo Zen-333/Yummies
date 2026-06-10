@@ -1,12 +1,13 @@
 import "../styles/header.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBlender, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faBlender, faPlus, faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../context/AuthContext"
 
-interface HeaderProps { onAddClick: () => void; onShowLogin: () => void; onEditProfile: () => void}
+interface HeaderProps { onAddClick: () => void; onShowLogin: () => void; onEditProfile: () => void }
 
-function Header({onAddClick, onShowLogin, onEditProfile}: HeaderProps) {
-  const {user} = useAuth()
+function Header({ onAddClick, onShowLogin, onEditProfile }: HeaderProps) {
+    const { user, profile } = useAuth()
+    const avatarUrl = profile?.avatar_url ?? null
 
   return (
     <> 
@@ -22,8 +23,10 @@ function Header({onAddClick, onShowLogin, onEditProfile}: HeaderProps) {
                         </button>
                     )}
                     {user ? (
-                        <button className="btn--secondary btn" onClick={onEditProfile}>
-                            Profile
+                        <button className="header__avatar-btn btn" onClick={onEditProfile}>
+                            {avatarUrl ? (
+                                <img src={avatarUrl} className="header__avatar-img" />
+                            ): (<FontAwesomeIcon icon={faCircleUser} className="header__avatar-icon" />)}
                         </button>
                     ) : (
                         <button className="btn--secondary btn" onClick={onShowLogin}>
