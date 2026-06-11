@@ -97,14 +97,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             const { data: uploadData, error: uploadError } = await supabase.storage
                 .from('avatars')
-                .upload(filePath, avatarFile, { cacheControl: '3600', upsert: true })
+                .upload(filePath, avatarFile, { cacheControl: '0', upsert: true })
 
             if (!uploadError && uploadData) {
                 const { data: urlData } = supabase.storage
                     .from('avatars')
                     .getPublicUrl(uploadData.path)
 
-                const avatarUrl = urlData.publicUrl
+                const avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`; 
 
                 // Store in auth metadata (accessible via user.user_metadata.avatar_url)
                 await supabase.auth.updateUser({ data: { avatar_url: avatarUrl } })
@@ -157,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 .from('avatars')
                 .getPublicUrl(uploadData.path)
             
-            avatarUrl = urlData.publicUrl;    
+            avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`;    
         }
 
         const updates: {display_name: string; avatar_url?: string} = {display_name: displayName}
