@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
+import { API_BASE_URL } from '../config/config'
 
 interface AuthContextType {
     user: User | null
@@ -18,8 +19,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     
@@ -182,7 +181,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const {data: {session}} = await supabase.auth.getSession();
         if(!session) return 'Not authenticated'
 
-        const response = await fetch('/api/user/account', {
+        const response = await fetch(`${API_BASE_URL}/api/user/account`, {
             method: 'DELETE',
             headers: {'Authorization': `Bearer ${session.access_token}`}
         })

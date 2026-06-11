@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
 import type { Recipe } from "../../../backend/src/types/recipe";
 import { supabase } from '../lib/supabase'
+import { API_BASE_URL } from '../config/config'
 
 interface PopupProps {
   onClose: () => void;
@@ -140,7 +141,8 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
         return;
       }
         
-      const url = isEditMode ? `/api/recipe/${recipeData.id}` : "/api/recipe";
+      /* const url = isEditMode ? `/api/recipe/${recipeData.id}` : "/api/recipe"; */
+      const url = isEditMode ? `${API_BASE_URL}/api/recipe/${recipeData.id}` : `${API_BASE_URL}/api/recipe`;
       const method = isEditMode ? "PUT" : "POST";
 
     const body = JSON.stringify({
@@ -180,37 +182,6 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
   };
 
   const hasNoMedia = existingImages.length === 0 && recipeMedia.length === 0;
-
-/*  FormData is a built-in Browser Class that handles all that "packaging" for you. 
-    Why use it? You cannot put a binary File inside a JSON string. JSON only likes text. If you try to stringify a File, it turns into {} (empty).
-    How it works: FormData creates a "Multipart" message. It’s like a shipping container with different compartments: */
-/*     const formData = new FormData(); 
-
-    formData.append("name", recipeName);
-    formData.append("notes", recipeNotes);
-
-    formData.append("ingredients", JSON.stringify(recipeIngredients));
-    formData.append("steps", JSON.stringify(recipeSteps));
-
-    recipeMedia.forEach((item) => {
-      formData.append("images", item.file);
-    });
-
-    try {
-      const response = await fetch("/api/recipe/", {
-        method: "POST",
-        body: formData,
-      });
-
-      if(response.ok){
-        recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
-        onClose();
-      }
-    } catch (error) {
-      console.error("Save failed", error);
-    } */
-
- /*  }; */
 
 return (
     <>

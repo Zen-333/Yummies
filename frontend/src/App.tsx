@@ -13,6 +13,7 @@ import { supabase } from './lib/supabase'
 import { useAuth } from './context/AuthContext' 
 import AccountOptions from './component/accountOptions';
 import EditProfile from './component/editProfile';
+import { API_BASE_URL } from './config/config';
 
 function App() {
   const { user, session, loading } = useAuth()  
@@ -96,7 +97,7 @@ function App() {
   const updateRecipes = async() => {
     if(!session) return
       try{
-        const response = await fetch("/api/recipe/",{
+        const response = await fetch(`${API_BASE_URL}/api/recipe`,{
           headers: {'Authorization': `Bearer ${session.access_token}`}
         });
         if(response.ok){
@@ -120,7 +121,7 @@ function App() {
     const {data: {session}} = await supabase.auth.getSession()
     if(!session) return;
     try{
-      const response = await fetch(`/api/recipe/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/recipe/${id}`, {
         method:"DELETE",
         headers: {'Authorization': `Bearer ${session.access_token}`}
       });
