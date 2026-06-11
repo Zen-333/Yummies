@@ -18,8 +18,6 @@ function EditProfile({onClose, showActionMessageState}: editProfileProps) {
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [ avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     const avatarInputRef = useRef<HTMLInputElement>(null);
 
@@ -45,17 +43,14 @@ function EditProfile({onClose, showActionMessageState}: editProfileProps) {
     const handleSave = async () => {
         if(!displayName.trim())
         {
-            setError("Display name cannot be empty.")
             return;
         }
 
-        setError(null);
         setIsSaving(true);
         const errorMsg = await updateProfile(displayName, avatarFile ?? undefined);
         setIsSaving(false);
         if(errorMsg)
         {
-            setError(errorMsg)
             return;
         }
         if(avatarPreview) URL.revokeObjectURL(avatarPreview)
@@ -68,7 +63,10 @@ function EditProfile({onClose, showActionMessageState}: editProfileProps) {
             "Permanently delete your account? All your recipes and data will be gone",
             async () => {
                 const errorMsg = await deleteAccount();
-                if(errorMsg) setError(errorMsg);
+                if(errorMsg)
+                {
+                    console.log(errorMsg);
+                }
             },
             "Delete Account"
         );
@@ -123,8 +121,8 @@ function EditProfile({onClose, showActionMessageState}: editProfileProps) {
 
                     <div className="editProfile__actions">
                         <div className="editProfile__danger-zone">
-                            <button type="button" className="btn btn--danger" onClick={handleDeleteClick} disabled={isDeleting}>
-                                {isDeleting ? "Deleting..." : "Delete Account"}
+                            <button type="button" className="btn btn--danger" onClick={handleDeleteClick}>
+                                Delete Account
                             </button>
                         </div>
                         <button type="button" className="btn btn--secondary" onClick={onClose}>

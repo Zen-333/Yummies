@@ -22,15 +22,14 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
   const isEditMode = recipeData !== undefined;
 
   const [existingImages, setExistingImages] = useState<string[]>([]); 
-  const [newMedia, setNewMedia] = useState<MediaItem[]>([]);    
   const [recipeSteps, setRecipeSteps] = useState<string[]>([""]);
   const [recipeName, setRecipeName] = useState<string>("");
   const [recipeMedia, setRecipeMedia] = useState<MediaItem[]>([]);
   const [recipeIngredients, setRecipeIngredients] = useState<string[]>([""]);
   const [recipeNotes, setRecipeNotes] = useState<string>("");
-  const [recipeTimeHr, setRecipeTimeHr] = useState<Number>(0);
-  const [recipeTimeMi, setRecipeTimeMi] = useState<Number>(0);
-  const [recipeCost, setRecipeCost] = useState<Number>(0);
+  const [recipeTimeHr, setRecipeTimeHr] = useState<number>(0);
+  const [recipeTimeMi, setRecipeTimeMi] = useState<number>(0);
+  const [recipeCost, setRecipeCost] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
 
   const mediaInputRef = useRef<HTMLInputElement>(null); /* You’re telling TypeScript: "This pointer will eventually point to an Input tag." and its initial value is null*/
