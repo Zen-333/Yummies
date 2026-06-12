@@ -171,7 +171,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await refreshProfile();
 
         if(avatarUrl) {
-            await supabase.auth.updateUser({data: {avatar_Url: avatarUrl}})
+            await supabase.auth.updateUser({data: {avatar_url: avatarUrl}})
         }
         
         return null
