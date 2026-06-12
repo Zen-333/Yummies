@@ -15,6 +15,9 @@ function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup
 
   if(!recipe) return null;
 
+  // Use dedicated cover image; fall back to first gallery image if none set
+  const cardImage = recipe.cover_image_url ?? recipe.images_url?.[0] ?? null;
+
   return ( 
       <>
       <div className="card" onClick={() => showRecipe(recipe)}>
@@ -29,8 +32,10 @@ function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup
             </div>
           </div>
           <div className="card__image">
-            {recipe.images_url && recipe.images_url.length > 0 ? (
-            <img src={recipe.images_url[0]} alt="" />): (<p>No Images Found</p>)}
+            {cardImage
+              ? <img src={cardImage} alt={recipe.name} />
+              : <p>No Image</p>
+            }
           </div>
           <div className="card__variables__container">
               <div className="card__variables">

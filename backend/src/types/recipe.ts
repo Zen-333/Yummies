@@ -3,6 +3,7 @@ export type Recipe = {
     user_id?: string
     name: string
     notes?: string
+    cover_image_url?: string
     images_url?: Array<string>
     ingredients?: Array<string>
     steps?: Array<string>

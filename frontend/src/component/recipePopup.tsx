@@ -1,7 +1,7 @@
 import "../styles/recipePopup.css"
 import { useState, useRef, useEffect } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faX, faPlus, faImage } from "@fortawesome/free-solid-svg-icons";
 import type { Recipe } from "../../../backend/src/types/recipe";
 import { supabase } from '../lib/supabase'
 import { API_BASE_URL } from '../config/config'
@@ -14,7 +14,7 @@ interface PopupProps {
 }
 
 interface MediaItem {
-  file: File; /* It is a binary object that lives in the browser's memory */
+  file: File;
   previewUrl: string;
 }
 
@@ -22,10 +22,18 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
 
   const isEditMode = recipeData !== undefined;
 
-  const [existingImages, setExistingImages] = useState<string[]>([]); 
+  // Cover image state
+  const [existingCoverImageUrl, setExistingCoverImageUrl] = useState<string | null>(null);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
+
+  // Gallery state
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [recipeMedia, setRecipeMedia] = useState<MediaItem[]>([]);
+
+  // Recipe fields
   const [recipeSteps, setRecipeSteps] = useState<string[]>([""]);
   const [recipeName, setRecipeName] = useState<string>("");
-  const [recipeMedia, setRecipeMedia] = useState<MediaItem[]>([]);
   const [recipeIngredients, setRecipeIngredients] = useState<string[]>([""]);
   const [recipeNotes, setRecipeNotes] = useState<string>("");
   const [recipeTimeHr, setRecipeTimeHr] = useState<number>(0);
@@ -33,10 +41,11 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
   const [recipeCost, setRecipeCost] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
 
-  const mediaInputRef = useRef<HTMLInputElement>(null); /* You’re telling TypeScript: "This pointer will eventually point to an Input tag." and its initial value is null*/
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const mediaInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-   if (isEditMode && recipeData) {
+    if (isEditMode && recipeData) {
       setRecipeName(recipeData.name);
       setRecipeSteps(recipeData.steps && recipeData.steps.length > 0 ? recipeData.steps : [""]);
       setRecipeIngredients(recipeData.ingredients && recipeData.ingredients.length > 0 ? recipeData.ingredients : [""]);
@@ -45,37 +54,114 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
       setRecipeTimeMi(Number(recipeData.time_mi ?? 0));
       setRecipeCost(Number(recipeData.cost ?? 0));
       setExistingImages(recipeData.images_url ?? []);
+      setExistingCoverImageUrl(recipeData.cover_image_url ?? null);
     }
   }, []);
 
+  // ── Cover image handlers ────────────────────────────────────────────────
+
+  const handleCoverImagePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (coverImagePreview) URL.revokeObjectURL(coverImagePreview);
+    setCoverImageFile(file);
+    setCoverImagePreview(URL.createObjectURL(file));
+    e.target.value = "";
+  };
+
+  const removeCoverImage = () => {
+    if (coverImagePreview) URL.revokeObjectURL(coverImagePreview);
+    setCoverImageFile(null);
+    setCoverImagePreview(null);
+    setExistingCoverImageUrl(null);
+  };
+
+  const uploadCoverImage = async (): Promise<string | null> => {
+    // No new file picked — return the existing URL (could be null if removed)
+    if (!coverImageFile) return existingCoverImageUrl;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return null;
+
+    const ext = coverImageFile.name.split('.').pop() ?? 'jpg';
+    const uniqueName = `cover-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const filePath = `${session.user.id}/${uniqueName}`;
+
+    const { data, error } = await supabase.storage
+      .from('recipe-images')
+      .upload(filePath, coverImageFile, { cacheControl: '3600', upsert: false });
+
+    if (error) {
+      console.error('Cover image upload failed:', error.message);
+      return null;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('recipe-images')
+      .getPublicUrl(data.path);
+
+    return urlData.publicUrl;
+  };
+
+  // ── Gallery handlers ────────────────────────────────────────────────────
+
   const handleMediaAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if(!file) return;
-
-    const previewUrl = URL.createObjectURL(file); // This function creates a unique string pointer that points directly to the file in the browser’s RAM.
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
     setRecipeMedia((prev) => [...prev, {file, previewUrl}]);
-    // reset input so the same file can be re-added if needed
     e.target.value = "";
   };
 
   const removeMedia = (index: number) => {
-    URL.revokeObjectURL(recipeMedia[index].previewUrl); // removing the object from the browser's memory
+    URL.revokeObjectURL(recipeMedia[index].previewUrl);
     removeFromArray(setRecipeMedia, index);
-  }
-
-   // Removes a URL from the existing (already-saved) images list.
-  // NOTE: This does NOT delete from Supabase Storage — it just removes the URL
-  // from what gets saved on next submit. You can add Storage deletion here later.
+  };
 
   const removeExistingImage = (index: number) => {
     setExistingImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-/*   we do <T,> with a comma so that the compilar doesnt think that this is an html tag but a template */
-  const addToArray = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, defaultValue: T) => {setter((prev) => [...prev, defaultValue])}; 
+  const uploadNewImages = async (): Promise<string[]> => {
+    if (recipeMedia.length === 0) return [];
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return [];
+
+    const uploadedUrls: string[] = [];
+
+    for (const item of recipeMedia) {
+      const ext = item.file.name.split('.').pop() ?? 'jpg';
+      const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const filePath = `${session.user.id}/${uniqueName}`;
+
+      const { data, error } = await supabase.storage
+        .from('recipe-images')
+        .upload(filePath, item.file, { cacheControl: '3600', upsert: false });
+
+      if (error) {
+        console.error('Storage upload failed for', item.file.name, error.message);
+        continue;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('recipe-images')
+        .getPublicUrl(data.path);
+
+      uploadedUrls.push(urlData.publicUrl);
+    }
+
+    return uploadedUrls;
+  };
+
+  // ── Array helpers ───────────────────────────────────────────────────────
+
+  const addToArray = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, defaultValue: T) => {
+    setter((prev) => [...prev, defaultValue]);
+  };
 
   const removeFromArray = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, index: number) => {
-      setter((prev) => prev.filter((_, i) => i !== index)); /* the filter function gives us 2 values (item, index) so we name it (_,i) developers use an underscore _ as a universal signal for: "I am ignoring this variable."*/
+    setter((prev) => prev.filter((_, i) => i !== index));
   };
 
   const updateArray = <T,>(setter: React.Dispatch<React.SetStateAction<T[]>>, index: number, value: T) => {
@@ -86,85 +172,55 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
     });
   };
 
-  const uploadNewImages = async (): Promise<string[]> => {
-  if (recipeMedia.length === 0) return [];
-
-  // FIX: get the Supabase session here, not sessionStorage (browser Web Storage)
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return [];
-
-  const uploadedUrls: string[] = [];
-
-  for (const item of recipeMedia) {
-    const ext = item.file.name.split('.').pop() ?? 'jpg';
-    const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    // FIX: use session.user.id, not sessionStorage.user.id
-    const filePath = `${session.user.id}/${uniqueName}`;
-
-    const { data, error } = await supabase.storage
-      .from('recipe-images')
-      .upload(filePath, item.file, { cacheControl: '3600', upsert: false });
-
-    if (error) {
-      console.error('Storage upload failed for', item.file.name, error.message);
-      continue;
-    }
-
-    const { data: urlData } = supabase.storage
-      .from('recipe-images')
-      .getPublicUrl(data.path);
-
-    uploadedUrls.push(urlData.publicUrl);
-  }
-
-  return uploadedUrls;
-};
+  // ── Save ────────────────────────────────────────────────────────────────
 
   const handleSave = async () => {
-    
-    if(!recipeName.trim()){
+    if (!recipeName.trim()) {
       onSaveSuccess("Please provide a recipe name", false);
       return;
     }
 
     setIsUploading(true);
 
-    const newImageUrls = await uploadNewImages();
+    const [coverImageUrl, newImageUrls] = await Promise.all([
+      uploadCoverImage(),
+      uploadNewImages(),
+    ]);
 
     const allImageUrls = [...existingImages, ...newImageUrls];
 
-    const {data: {session}} = await supabase.auth.getSession()
-    if(!session) 
-      {
-        setIsUploading(false);
-        onSaveSuccess("Not authenticated", false);
-        return;
-      }
-        
-      /* const url = isEditMode ? `/api/recipe/${recipeData.id}` : "/api/recipe"; */
-      const url = isEditMode ? `${API_BASE_URL}/api/recipe/${recipeData.id}` : `${API_BASE_URL}/api/recipe`;
-      const method = isEditMode ? "PUT" : "POST";
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setIsUploading(false);
+      onSaveSuccess("Not authenticated", false);
+      return;
+    }
+
+    const url = isEditMode ? `${API_BASE_URL}/api/recipe/${recipeData.id}` : `${API_BASE_URL}/api/recipe`;
+    const method = isEditMode ? "PUT" : "POST";
 
     const body = JSON.stringify({
       name: recipeName,
+      cover_image_url: coverImageUrl,
       notes: recipeNotes,
       ingredients: recipeIngredients.filter(i => i.trim() !== ""),
       steps: recipeSteps.filter(s => s.trim() !== ""),
       time_hr: recipeTimeHr,
       time_mi: recipeTimeMi,
       cost: recipeCost,
-      images_url: allImageUrls
+      images_url: allImageUrls,
     });
 
     try {
       const response = await fetch(url, {
-        method: method,
-        headers: {"Content-Type": "application/json",'Authorization': `Bearer ${session.access_token}`},
-        body: body
+        method,
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${session.access_token}` },
+        body,
       });
 
       if (response.ok) {
         recipeMedia.forEach(item => URL.revokeObjectURL(item.previewUrl));
+        if (coverImagePreview) URL.revokeObjectURL(coverImagePreview);
         onSaveSuccess(isEditMode ? "Recipe updated successfully!" : "Recipe created successfully!", true);
         onRecipeUpdated();
         onClose();
@@ -176,30 +232,66 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
     } catch (error) {
       console.error("Save failed", error);
       onSaveSuccess("Network error occurred", false);
-    } finally{
+    } finally {
       setIsUploading(false);
     }
   };
 
-  const hasNoMedia = existingImages.length === 0 && recipeMedia.length === 0;
+  const showCover = coverImagePreview ?? existingCoverImageUrl;
+  const hasNoGalleryMedia = existingImages.length === 0 && recipeMedia.length === 0;
 
-return (
+  return (
     <>
       <div className="popup-overlay" onClick={onClose}>
         <div className="popup" onClick={(e) => e.stopPropagation()}>
- 
+
           <div className="popup__title">
             <p>{isEditMode ? "Edit Recipe" : "Add Recipe"}</p>
             <button onClick={onClose} className="btn"><FontAwesomeIcon icon={faX} /></button>
           </div>
- 
+
           <div className="popup__body">
- 
+
+            {/* ── Cover Image ── */}
+            <div className="popup__input__block">
+              <p className="popup__input__label">Cover Image</p>
+              <div
+                className={`popup__cover${showCover ? " popup__cover--filled" : ""}`}
+                onClick={() => coverInputRef.current?.click()}
+              >
+                {showCover ? (
+                  <>
+                    <img src={showCover} alt="Cover preview" className="popup__cover__img" />
+                    <button
+                      className="btn popup__cover__remove"
+                      onClick={(e) => { e.stopPropagation(); removeCoverImage(); }}
+                    >
+                      <FontAwesomeIcon icon={faX} />
+                    </button>
+                  </>
+                ) : (
+                  <div className="popup__cover__placeholder">
+                    <FontAwesomeIcon icon={faImage} />
+                    <span>Click to set a cover image</span>
+                  </div>
+                )}
+              </div>
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleCoverImagePick}
+              />
+            </div>
+
+            {/* ── Recipe Name ── */}
             <div className="popup__input__block">
               <p className="popup__input__label">Recipe Name</p>
               <input type="text" value={recipeName} placeholder="e.g. Classic Pancakes" onChange={(e) => setRecipeName(e.target.value)} />
             </div>
- 
+
+            {/* ── Ingredients ── */}
             <div className="popup__input__block">
               <div className="popup__input__label popup__input__label--row">
                 <p>Ingredients</p>
@@ -220,7 +312,8 @@ return (
                 ))}
               </div>
             </div>
- 
+
+            {/* ── Steps ── */}
             <div className="popup__input__block">
               <div className="popup__input__label popup__input__label--row">
                 <p>Steps</p>
@@ -241,12 +334,13 @@ return (
                 ))}
               </div>
             </div>
- 
+
+            {/* ── Gallery Images ── */}
             <div className="popup__input__block">
               <div className="popup__input__label popup__input__label--row">
-                <p>Images / Videos</p>
+                <p>Gallery Images</p>
                 <button className="btn btn--secondary" onClick={() => mediaInputRef.current?.click()}>
-                  <FontAwesomeIcon icon={faPlus} /> Add Media
+                  <FontAwesomeIcon icon={faPlus} /> Add Image
                 </button>
                 <input
                   ref={mediaInputRef}
@@ -256,13 +350,11 @@ return (
                   onChange={handleMediaAdd}
                 />
               </div>
- 
-              {hasNoMedia ? (
-                <p className="popup__empty__text">No images or videos added yet</p>
+
+              {hasNoGalleryMedia ? (
+                <p className="popup__empty__text">No gallery images added yet</p>
               ) : (
                 <div className="popup__media__list">
- 
-                  {/* Already-saved images (edit mode): show with a remove button */}
                   {existingImages.map((url, index) => (
                     <div key={`existing-${index}`} className="popup__media__item">
                       <img src={url} alt={`existing ${index}`} className="popup__media__preview" />
@@ -271,8 +363,6 @@ return (
                       </button>
                     </div>
                   ))}
- 
-                  {/* New files picked this session: local blob preview */}
                   {recipeMedia.map((item, index) => (
                     <div key={`new-${index}`} className="popup__media__item popup__media__item--new">
                       {item.file.type.startsWith("video/") ? (
@@ -285,11 +375,11 @@ return (
                       </button>
                     </div>
                   ))}
- 
                 </div>
               )}
             </div>
- 
+
+            {/* ── Time & Cost ── */}
             <div className="popup__input__block">
               <p className="popup__input__label">Time & Cost</p>
               <div className="popup__inline__fields">
@@ -307,25 +397,26 @@ return (
                 </div>
               </div>
             </div>
- 
+
+            {/* ── Notes ── */}
             <div className="popup__input__block">
               <p className="popup__input__label">Notes</p>
               <textarea rows={3} value={recipeNotes} placeholder="Any extra tips or serving suggestions..." onChange={(e) => setRecipeNotes(e.target.value)} />
             </div>
- 
+
           </div>
- 
+
           <div className="popup__action__buttons">
             <button onClick={handleSave} className="btn btn--primary" disabled={isUploading}>
               {isUploading ? "Saving..." : (isEditMode ? "Save Changes" : "Add Recipe")}
             </button>
             <button onClick={onClose} className="btn btn--secondary" disabled={isUploading}>Cancel</button>
           </div>
- 
+
         </div>
       </div>
     </>
   );
 }
- 
+
 export default RecipePopup;
