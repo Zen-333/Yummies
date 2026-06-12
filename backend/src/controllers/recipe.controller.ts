@@ -20,7 +20,7 @@ export const getAllRecipe = async (req: AuthRequest, res: Response) => {
 };
 
 export const addRecipe = async (req: AuthRequest, res: Response) => {
-    const {name, notes, images_url, steps, ingredients, time_hr, time_mi, cost} = req.body; //as NewRecipe;
+    const {name, notes, images_url, steps, ingredients, time_hr, time_mi, cost, cover_image_url} = req.body; //as NewRecipe;
 
     if(!name || name.trim() === "")
     {
@@ -31,7 +31,7 @@ export const addRecipe = async (req: AuthRequest, res: Response) => {
 
     const {data, error} = await supabase
         .from('recipes')
-        .insert([{name, notes, images_url, steps, ingredients, time_hr, time_mi, cost, user_id: req.userId}])
+        .insert([{name, notes, images_url, steps, ingredients, time_hr, time_mi, cost, cover_image_url, user_id: req.userId}])
         .select()
         .single();
 
