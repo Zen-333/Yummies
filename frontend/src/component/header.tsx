@@ -17,23 +17,22 @@ function Header({ onAddClick, onShowLogin, onEditProfile }: HeaderProps) {
               <FontAwesomeIcon icon={faBlender} />Yummies
             </div>
             <div className="header__actions">
-                    {user && (
-                        <button className="btn--primary btn" onClick={onAddClick}>
-                            <FontAwesomeIcon icon={faPlus} /> Add Recipe
-                        </button>
-                    )}
-                    {user ? (
-                        <button className="header__avatar-btn btn" onClick={onEditProfile}>
-                            {avatarUrl ? (
-                                <img src={avatarUrl} className="header__avatar-img" />
-                            ): (<FontAwesomeIcon icon={faCircleUser} className="header__avatar-icon" />)}
-                        </button>
-                    ) : (
-                        <button className="btn--secondary btn" onClick={onShowLogin}>
-                            Login
-                        </button>
-                    )}
-                </div>
+                <button className="btn--primary btn" onClick={onAddClick}>
+                    <FontAwesomeIcon icon={faPlus} /> Add Recipe
+                </button>
+
+                {user ? (
+                    <button className="header__avatar-btn btn" onClick={onEditProfile}>
+                        {avatarUrl ? (
+                            <img src={avatarUrl} className="header__avatar-img" />
+                        ) : (<FontAwesomeIcon icon={faCircleUser} className="header__avatar-icon" />)}
+                    </button>
+                ) : (
+                    <button className="btn--secondary btn" onClick={onShowLogin}>
+                        Login
+                    </button>
+                )}
+            </div>
           </div>
         </div>
     </>

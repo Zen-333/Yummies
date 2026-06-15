@@ -109,6 +109,14 @@ function App() {
       }
     };
 
+  const onGuestRecipeSave = (recipe: Recipe) => {
+  setRecipes(prev => {
+    const exists = prev.find(r => r.id === recipe.id);
+    if (exists) return prev.map(r => r.id === recipe.id ? recipe : r);
+    return [recipe, ...prev];
+  });
+};
+
   useEffect(() => {
     if(!user){
       setRecipes([]);
@@ -117,23 +125,27 @@ function App() {
     updateRecipes();
   }, [user, session]);
 
-  const onDelete = async(id: string) => {
-    const {data: {session}} = await supabase.auth.getSession()
-    if(!session) return;
-    try{
+  const onDelete = async (id: string) => {
+    if (!session) {
+      // Guest mode: state-only delete
+      setRecipes(prev => prev.filter(r => r.id !== id));
+      triggerMessage("Recipe deleted", true);
+      return;
+    }
+    try {
       const response = await fetch(`${API_BASE_URL}/api/recipe/${id}`, {
-        method:"DELETE",
-        headers: {'Authorization': `Bearer ${session.access_token}`}
+        method: "DELETE",
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
       });
-      if(response.ok){
+      if (response.ok) {
         setRecipes(prev => prev.filter(r => r.id !== id));
         triggerMessage("Recipe deleted", true);
-      }else {
+      } else {
         triggerMessage("Failed to delete recipe", false);
       }
-    } catch(error){
+    } catch (error) {
       console.error("Delete failed", error);
-      triggerMessage("Network error occured", false);
+      triggerMessage("Network error occurred", false);
     }
   };
 
@@ -145,25 +157,49 @@ function App() {
     }, 3000);
   };
 
-  if(loading) return null
+  if (loading) return null
   return (
-    <> 
-    <div className="app-contain">
-      {showStatus.show && (
-        <SuccessMessage success={showStatus.success} message={showStatus.msg}/>
-      )}
-      <Header onAddClick={openAddPopup} onShowLogin={onShowLogin} onEditProfile={onShowAccountOptions}/>
-      {isAccountOptionsOpen && (<AccountOptions onClose={onCloseAccountOptions} onEdit={onShowEditProfile}/>)}
-      {isEditProfileOpen && (<EditProfile onClose={onHideEditProfile} showActionMessageState={setShowActionMessageState}/>)}
-      {isLoginOpen && (<LoginSignUp onClose={onShowLogin}/>)}
-      {isViewRecipeOpen && editingRecipe && (<RecipeViewer onClose={closeRecipeViewer} recipe={editingRecipe}/>)}
-      {recipes.length === 0 && (<Hero onAddClick={openAddPopup}/>) }
-      {recipes.length > 0 && (<div className='app__recipeCard__list'>{(recipes.map((r) => ( <RecipeCard key={r.id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup} showRecipe={openRecipe}/>)))} </div>)}
-      {showActionMessage.show && (<ActionConfirmation msg={showActionMessage.msg} onDanger={() => {showActionMessage.onDanger(); hideActionMessage();}} onCancel={hideActionMessage} dangerStr={showActionMessage.dangerStr}/>)}
-      {isPopupOpen && (<RecipePopup onClose={closePopup} onSaveSuccess={triggerMessage} onRecipeUpdated={updateRecipes} recipeData={editingRecipe ?? undefined}/>)}
-    </div>
-    </>
-  )
-}
+    <>
+      <div className="app-contain">
+        {showStatus.show && (
+          <SuccessMessage success={showStatus.success} message={showStatus.msg} />
+        )}
+        <Header onAddClick={openAddPopup} onShowLogin={onShowLogin} onEditProfile={onShowAccountOptions} />
 
-export default App
+        {/* Guest mode notice */}
+        {!user && (
+          <div className="app__guest-banner">
+            <span>👋 Browsing as guest data resets on refresh. Login to save your data!</span>
+           {/*  <button className="btn btn--secondary" onClick={onShowLogin}>Login to save permanently</button> */}
+          </div>
+        )}
+
+        {isAccountOptionsOpen && (<AccountOptions onClose={onCloseAccountOptions} onEdit={onShowEditProfile} />)}
+        {isEditProfileOpen && (<EditProfile onClose={onHideEditProfile} showActionMessageState={setShowActionMessageState} />)}
+        {isLoginOpen && (<LoginSignUp onClose={onShowLogin} />)}
+        {isViewRecipeOpen && editingRecipe && (<RecipeViewer onClose={closeRecipeViewer} recipe={editingRecipe} />)}
+        {recipes.length === 0 && (<Hero onAddClick={openAddPopup} />)}
+        {recipes.length > 0 && (
+          <div className='app__recipeCard__list'>
+            {recipes.map((r) => (
+              <RecipeCard key={r.id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup} showRecipe={openRecipe} />
+            ))}
+          </div>
+        )}
+        {showActionMessage.show && (
+          <ActionConfirmation msg={showActionMessage.msg} onDanger={() => { showActionMessage.onDanger(); hideActionMessage(); }} onCancel={hideActionMessage} dangerStr={showActionMessage.dangerStr} />
+        )}
+        {isPopupOpen && (
+          <RecipePopup
+            onClose={closePopup}
+            onSaveSuccess={triggerMessage}
+            onRecipeUpdated={updateRecipes}
+            onGuestSave={onGuestRecipeSave}   // <-- new prop
+            recipeData={editingRecipe ?? undefined}
+          />
+        )}
+      </div>
+    </>
+  )};
+
+export default App;

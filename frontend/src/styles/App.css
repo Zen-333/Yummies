@@ -13,3 +13,15 @@
     padding: 20px;
     width: 100%;
 }
+
+.app__guest-banner {
+  background-color: #fffbea;
+  border-bottom: 1px solid #ffe58f;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-size: 13px;
+  color: #856404;
+}

@@ -5,11 +5,13 @@ import { faX, faPlus, faImage } from "@fortawesome/free-solid-svg-icons";
 import type { Recipe } from "../../../backend/src/types/recipe";
 import { supabase } from '../lib/supabase'
 import { API_BASE_URL } from '../config/config'
+import { useAuth } from '../context/AuthContext'
 
 interface PopupProps {
   onClose: () => void;
   onSaveSuccess: (message: string, isSuccess: boolean) => void;
   onRecipeUpdated: () => void;
+  onGuestSave?: (recipe: Recipe) => void;
   recipeData?: Recipe;
 }
 
@@ -18,8 +20,9 @@ interface MediaItem {
   previewUrl: string;
 }
 
-function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: PopupProps) {
-
+function RecipePopup({ onClose, onSaveSuccess, onRecipeUpdated, onGuestSave, recipeData }: PopupProps) {
+  const { session } = useAuth()
+  const isGuest = !session
   const isEditMode = recipeData !== undefined;
 
   // Cover image state
@@ -174,13 +177,39 @@ function RecipePopup({onClose, onSaveSuccess, onRecipeUpdated, recipeData}: Popu
 
   // ── Save ────────────────────────────────────────────────────────────────
 
-  const handleSave = async () => {
-    if (!recipeName.trim()) {
-      onSaveSuccess("Please provide a recipe name", false);
-      return;
-    }
+const handleSave = async () => {
+  if (!recipeName.trim()) {
+    onSaveSuccess("Please provide a recipe name", false);
+    return;
+  }
 
-    setIsUploading(true);
+  // Guest mode: no uploads, store blob URLs directly in state
+  if (isGuest) {
+    const guestRecipe: Recipe = {
+      id: isEditMode ? recipeData!.id : crypto.randomUUID(),
+      name: recipeName,
+      cover_image_url: (coverImagePreview ?? existingCoverImageUrl) ?? undefined,
+      notes: recipeNotes || undefined,
+      ingredients: recipeIngredients.filter(i => i.trim() !== ""),
+      steps: recipeSteps.filter(s => s.trim() !== ""),
+      time_hr: recipeTimeHr,
+      time_mi: recipeTimeMi,
+      cost: recipeCost,
+      images_url: [...existingImages, ...recipeMedia.map(m => m.previewUrl)],
+    };
+    onGuestSave?.(guestRecipe);
+    onSaveSuccess(
+      isEditMode ? "Recipe updated!" : "Recipe added! Log in to save permanently.",
+      true
+    );
+    onClose();
+    return;
+    // Note: blob URLs are NOT revoked here — they must stay valid in state
+  }
+
+  // Logged-in path: everything below this is unchanged
+  setIsUploading(true);
+  // ...
 
     const [coverImageUrl, newImageUrls] = await Promise.all([
       uploadCoverImage(),
