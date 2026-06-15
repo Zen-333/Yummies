@@ -9,7 +9,6 @@ import type { Recipe } from "../../backend/src/types/recipe";
 import ActionConfirmation from './component/actionConfirmation';
 import RecipeViewer from './component/recipeViewer';
 import LoginSignUp from "./component/loginSignUp";
-import { supabase } from './lib/supabase'
 import { useAuth } from './context/AuthContext' 
 import AccountOptions from './component/accountOptions';
 import EditProfile from './component/editProfile';
