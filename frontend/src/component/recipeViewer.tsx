@@ -2,7 +2,7 @@ import { useState } from "react"
 import "../styles/recipeViewer.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faClock, faSterlingSign, faListCheck, faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import type { Recipe } from "../../../backend/src/types/recipe";
+import type { Recipe } from "../types/recipe";
 import ImageLightbox from "./imageLightbox";
 
 interface RecipeViewerProps{
@@ -128,7 +128,7 @@ function RecipeViewer({onClose, recipe}: RecipeViewerProps) {
                 </div>
             </div>
 
-            {/* Lightbox — rendered outside recipeViewer so it covers everything */}
+            {/* Lightbox rendered outside recipeViewer so it covers everything */}
             {lightboxIndex !== null && (
                 <ImageLightbox
                     images={images}

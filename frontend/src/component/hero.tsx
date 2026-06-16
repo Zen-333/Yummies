@@ -1,6 +1,6 @@
-import "../styles/hero.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBlender, faPlus } from "@fortawesome/free-solid-svg-icons";
+import "../styles/hero.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBlender, faPlus } from "@fortawesome/free-solid-svg-icons"
 
 interface HeroProps { onAddClick: () => void;}
 

@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     .eq('user_id', data.user.id)
             } else if (uploadError) {
                 console.error('Avatar upload failed:', uploadError.message)
-                // Not fatal — account created, avatar just won't be set
+                // Not fatal account created, avatar just won't be set
             }
         }
 

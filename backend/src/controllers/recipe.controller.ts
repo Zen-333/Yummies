@@ -1,6 +1,6 @@
-import {Request, Response} from 'express';
+import { Response} from 'express';
 import { NewRecipe } from '../types/recipe';
-import {supabase} from "../lib/supabase"
+import { supabase } from "../lib/supabase"
 import { AuthRequest } from '../middleware/auth.middleware'
 
 export const getAllRecipe = async (req: AuthRequest, res: Response) => {
@@ -16,16 +16,16 @@ export const getAllRecipe = async (req: AuthRequest, res: Response) => {
         return;
     }
 
-    res.status(200).json({success: true, message: "GET ALL RECIPES", recipies: data});
+    res.status(200).json({success: true, message: "Get all recipes", recipes: data});
 };
 
 export const addRecipe = async (req: AuthRequest, res: Response) => {
-    const {name, notes, images_url, steps, ingredients, time_hr, time_mi, cost, cover_image_url} = req.body; //as NewRecipe;
+    const {name, notes, images_url, steps, ingredients, time_hr, time_mi, cost, cover_image_url} = req.body;
 
     if(!name || name.trim() === "")
     {
         res.status(400)
-        .json({success: false, message: "PLEASE PROVIDE A RECIPE NAME"});
+        .json({success: false, message: "Please provide a recipe name"});
         return;
     }
 
@@ -39,18 +39,18 @@ export const addRecipe = async (req: AuthRequest, res: Response) => {
        /*  .single(): Tells Supabase that we are only inserting one row, so please return data as a single, neat object {...} instead of a single-item array [{...}]. */
 
     if(error){
-        console.error("SUPABASE ERROR:", error);
+        console.error("Supabase error:", error);
         res.status(500).json({success: false, message: error.message});
         return;
     }
 
-    res.status(201).json({success: true, message: "RECIPE ADDED", recipe: data});
+    res.status(201).json({success: true, message: "Recipe added", recipe: data});
 };
 
 export const updateRecipe = async (req: AuthRequest, res: Response) => {
     const {id} = req.params;
     const updates = req.body as Partial<NewRecipe>;
-/*     A Partial type tells TypeScript: "This object can contain any combination of fields from a recipe, but none of them are strictly required." */
+     /* A Partial type tells TypeScript: "This object can contain any combination of fields from a recipe, but none of them are strictly required." */
 
     const {data, error} = await supabase
     .from('recipes')
@@ -61,11 +61,11 @@ export const updateRecipe = async (req: AuthRequest, res: Response) => {
     .single();
 
     if(error){
-        res.status(404).json({success: false, message: "COULDN'T UPDATE RECIPE"});
+        res.status(404).json({success: false, message: "Couldn't update recipe"});
         return;
     }
 
-    res.status(200).json({success: true, message: "RECIPE UPDATED SUCCESSFULLY", recipe: data});
+    res.status(200).json({success: true, message: "Recipe updated successfully", recipe: data});
 };
 
 export const deleteRecipe = async (req: AuthRequest, res: Response) => {
@@ -79,9 +79,9 @@ export const deleteRecipe = async (req: AuthRequest, res: Response) => {
     .eq('user_id',req.userId);
 
     if(error){
-        res.status(404).json({success: false, message: "INVALID RECIPE ID", id});
+        res.status(404).json({success: false, message: "Invalid recipe ID", id});
         return;
     }
 
-    res.status(200).json({success: true, message: "RECIPE DELETED", id});
+    res.status(200).json({success: true, message: "recipe deleted", id});
 };

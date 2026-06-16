@@ -2,7 +2,7 @@ import "../styles/recipePopup.css"
 import { useState, useRef, useEffect } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faPlus, faImage } from "@fortawesome/free-solid-svg-icons";
-import type { Recipe } from "../../../backend/src/types/recipe";
+import type { Recipe } from "../types/recipe";
 import { supabase } from '../lib/supabase'
 import { API_BASE_URL } from '../config/config'
 import { useAuth } from '../context/AuthContext'
@@ -80,7 +80,7 @@ function RecipePopup({ onClose, onSaveSuccess, onRecipeUpdated, onGuestSave, rec
   };
 
   const uploadCoverImage = async (): Promise<string | null> => {
-    // No new file picked — return the existing URL (could be null if removed)
+    // No new file picked return the existing URL (could be null if removed)
     if (!coverImageFile) return existingCoverImageUrl;
 
     const { data: { session } } = await supabase.auth.getSession();
@@ -204,12 +204,9 @@ const handleSave = async () => {
     );
     onClose();
     return;
-    // Note: blob URLs are NOT revoked here — they must stay valid in state
   }
 
-  // Logged-in path: everything below this is unchanged
   setIsUploading(true);
-  // ...
 
     const [coverImageUrl, newImageUrls] = await Promise.all([
       uploadCoverImage(),

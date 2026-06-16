@@ -1,6 +1,6 @@
 import { Response } from "express";
-import {supabase} from '../lib/supabase'
-import {AuthRequest} from '../middleware/auth.middleware'
+import { supabase } from '../lib/supabase'
+import { AuthRequest } from '../middleware/auth.middleware'
 
 export const deleteAccount = async (req: AuthRequest, res: Response) => {
     if(!req.userId)

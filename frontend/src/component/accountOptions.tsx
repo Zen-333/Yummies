@@ -1,6 +1,6 @@
 import "../styles/accountOptions.css"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear, faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faGear, faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons"
 import { useAuth } from "../context/AuthContext"
 
 interface AccountOptionsprops{

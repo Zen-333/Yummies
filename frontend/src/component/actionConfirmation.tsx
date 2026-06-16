@@ -12,7 +12,7 @@ function ActionConfirmation({msg, onDanger, onCancel, dangerStr}: props) {
   return (
     <> 
     <div className="actionConfirm__overlay">
-        <div className="actionConfirm__container" onClick={(e) => e.stopPropagation()}> {/* The click ends here. Do not tell my parents (the overlay) that I was clicked. */}
+        <div className="actionConfirm__container" onClick={(e) => e.stopPropagation()}>
             <div className="actionConfirm__message">{msg}</div>
             <div className="actionConfirm__buttons">
                 <button className="btn--secondary btn" onClick={onCancel}>Cancel</button>

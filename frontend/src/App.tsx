@@ -5,7 +5,7 @@ import Hero from "./component/hero"
 import RecipePopup from './component/recipePopup'
 import SuccessMessage from './component/successMessage';
 import RecipeCard from './component/recipeCard';
-import type { Recipe } from "../../backend/src/types/recipe";
+import type { Recipe } from "./types/recipe";
 import ActionConfirmation from './component/actionConfirmation';
 import RecipeViewer from './component/recipeViewer';
 import LoginSignUp from "./component/loginSignUp";
@@ -169,7 +169,6 @@ function App() {
         {!user && (
           <div className="app__guest-banner">
             <span>👋 Browsing as guest data resets on refresh. Login to save your data!</span>
-           {/*  <button className="btn btn--secondary" onClick={onShowLogin}>Login to save permanently</button> */}
           </div>
         )}
 
@@ -181,19 +180,25 @@ function App() {
         {recipes.length > 0 && (
           <div className='app__recipeCard__list'>
             {recipes.map((r) => (
-              <RecipeCard key={r.id} recipe={r} onDeleteFunc={onDelete} showActionMessageState={setShowActionMessageState} showEditPopup={openEditPopup} showRecipe={openRecipe} />
+              <RecipeCard key={r.id} recipe={r} 
+              onDeleteFunc={onDelete} 
+              showActionMessageState={setShowActionMessageState} 
+              showEditPopup={openEditPopup} 
+              showRecipe={openRecipe} />
             ))}
           </div>
         )}
         {showActionMessage.show && (
-          <ActionConfirmation msg={showActionMessage.msg} onDanger={() => { showActionMessage.onDanger(); hideActionMessage(); }} onCancel={hideActionMessage} dangerStr={showActionMessage.dangerStr} />
+          <ActionConfirmation msg={showActionMessage.msg} 
+          onDanger={() => { showActionMessage.onDanger(); hideActionMessage(); }} 
+          onCancel={hideActionMessage} dangerStr={showActionMessage.dangerStr} />
         )}
         {isPopupOpen && (
           <RecipePopup
             onClose={closePopup}
             onSaveSuccess={triggerMessage}
             onRecipeUpdated={updateRecipes}
-            onGuestSave={onGuestRecipeSave}   // <-- new prop
+            onGuestSave={onGuestRecipeSave}  
             recipeData={editingRecipe ?? undefined}
           />
         )}

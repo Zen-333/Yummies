@@ -38,14 +38,12 @@
     font-size: 15px;
     font-weight: 600;
     color: #0a0a0a;
-    /* truncate long names */
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     margin-right: 8px;
 }
 
-/* Image area — fixed height so cards stay uniform */
 .card__image {
     width: 100%;
     height: 200px;

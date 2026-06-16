@@ -40,7 +40,8 @@
 }
 
 .recipeViewer__close-btn {
-    background: none !important; /* "!important" bad practice: it overrides any other CSS rule targeting the same property, regardless of specificity */
+    background: none !important; 
+    /* "!important" bad practice: it overrides any other CSS rule targeting the same property, regardless of specificity */
     border: none !important;
     color: #888;
     font-size: 14px;

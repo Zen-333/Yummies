@@ -1,5 +1,5 @@
 import "../styles/recipeCard.css"
-import type { Recipe } from "../../../backend/src/types/recipe"
+import type { Recipe } from "../types/recipe"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faSterlingSign, faListCheck, faCartShopping, faPenToSquare, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
@@ -27,8 +27,11 @@ function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup
                 {recipe.name}
             </div>
             <div className="card__buttons">
-              <button className="btn--secondary btn" onClick={(e) => {showEditPopup(recipe); e.stopPropagation();}}><FontAwesomeIcon icon={faPenToSquare} /></button>
-              <button className="btn--secondary btn" onClick={(e) => {showActionMessageState(true, `Are you sure you want to delete the "${recipe.name}" recipe?`, () => onDeleteFunc(recipe.id), "Delete"); e.stopPropagation();}}><FontAwesomeIcon icon={faTrashCan} /></button>
+              <button className="btn--secondary btn" onClick={(e) => 
+                {showEditPopup(recipe); e.stopPropagation();}}><FontAwesomeIcon icon={faPenToSquare} /></button>
+              <button className="btn--secondary btn" onClick={(e) => 
+                {showActionMessageState(true, `Are you sure you want to delete the "${recipe.name}" recipe?`, () => onDeleteFunc(recipe.id), "Delete");
+                 e.stopPropagation();}}><FontAwesomeIcon icon={faTrashCan} /></button>
             </div>
           </div>
           <div className="card__image">

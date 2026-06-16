@@ -1,6 +1,6 @@
 import "../styles/header.css"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBlender, faPlus, faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBlender, faPlus, faCircleUser } from "@fortawesome/free-solid-svg-icons"
 import { useAuth } from "../context/AuthContext"
 
 interface HeaderProps { onAddClick: () => void; onShowLogin: () => void; onEditProfile: () => void }

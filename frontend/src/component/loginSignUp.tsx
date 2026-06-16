@@ -27,8 +27,6 @@ function LoginSignUp({ onClose}: LoginSignUpProps) {
         setError(null)
         setEmail("")
         setPassword("")
-        // Don't clear avatar — it's only shown in sign up anyway,
-        // but clear it for cleanliness when switching back to login
         setAvatarFile(null)
         if (avatarPreview) {
             URL.revokeObjectURL(avatarPreview)
@@ -53,7 +51,7 @@ function LoginSignUp({ onClose}: LoginSignUpProps) {
             return
         }
 
-        // Basic email format check — Supabase will also validate server-side
+        // Basic email format check Supabase will also validate server-side
         if (!email.includes("@")) {
             setError("Please enter a valid email address.")
             return
@@ -82,14 +80,13 @@ function LoginSignUp({ onClose}: LoginSignUpProps) {
             }
         }
 
-        // On success — auth state change in AuthContext will update user,
-        // which triggers App.tsx to reload recipes. Just close the modal.
+        // On success auth state change in AuthContext will update user,
+        // which triggers App.tsx to reload recipes.
         setIsLoading(false)
         onClose()
     }
 
     return (
-        // Clicking the overlay closes the modal, clicking the box itself stops propagation
         <div className="loginSignUp__overlay" onClick={onClose}>
             <div className="loginSignUp__container" onClick={(e) => e.stopPropagation()}>
 
@@ -117,7 +114,6 @@ function LoginSignUp({ onClose}: LoginSignUpProps) {
 
                 <div className="loginSignUp__body">
 
-                    {/* Avatar picker — only shown on sign up */}
                     {!isLogin && (
                         <div className="loginSignUp__avatar-section">
                             <div
