@@ -101,7 +101,7 @@ function App() {
         });
         if(response.ok){
           const data = await response.json();
-          setRecipes(data.recipies);
+          setRecipes(data.recipes);
         }
       }catch(error){
         console.error("Failed to fetch recipes", error);
