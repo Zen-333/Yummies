@@ -12,8 +12,6 @@ const router = express.Router();
 
 router.use(requireAuth);
 
-/* In Express, router.use() is a built-in method that registers a global middleware for that specific router. */
-
 router.get("/", getAllRecipe);
 router.post("/", addRecipe);
 router.put("/:id", updateRecipe);

@@ -51,7 +51,6 @@ function LoginSignUp({ onClose}: LoginSignUpProps) {
             return
         }
 
-        // Basic email format check Supabase will also validate server-side
         if (!email.includes("@")) {
             setError("Please enter a valid email address.")
             return
@@ -80,8 +79,6 @@ function LoginSignUp({ onClose}: LoginSignUpProps) {
             }
         }
 
-        // On success auth state change in AuthContext will update user,
-        // which triggers App.tsx to reload recipes.
         setIsLoading(false)
         onClose()
     }

@@ -73,16 +73,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         })
     }
 
-    // Returns null on success, or an error message string on failure.
     const signInWithEmail = async (email: string, password: string): Promise<string | null> => {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) return error.message
         return null
     }
 
-    // Returns null on success, or an error message string on failure.
-    // If an avatarFile is provided, it uploads it to the 'avatars' bucket and
-    // saves the public URL into the user's metadata so it's accessible anywhere.
     const signUpWithEmail = async (email: string, password: string, avatarFile?: File): Promise<string | null> => 
     {
         const { data, error } = await supabase.auth.signUp({ email, password })
@@ -105,17 +101,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
                 const avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`; 
 
-                // Store in auth metadata (accessible via user.user_metadata.avatar_url)
                 await supabase.auth.updateUser({ data: { avatar_url: avatarUrl } })
 
-                // Also update the profiles table row that the trigger just created
                 await supabase
                     .from('profiles')
                     .update({ avatar_url: avatarUrl })
                     .eq('user_id', data.user.id)
             } else if (uploadError) {
                 console.error('Avatar upload failed:', uploadError.message)
-                // Not fatal account created, avatar just won't be set
             }
         }
 

@@ -126,7 +126,6 @@ function App() {
 
   const onDelete = async (id: string) => {
     if (!session) {
-      // Guest mode: state-only delete
       setRecipes(prev => prev.filter(r => r.id !== id));
       triggerMessage("Recipe deleted", true);
       return;

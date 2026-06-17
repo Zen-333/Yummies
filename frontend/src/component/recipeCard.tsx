@@ -15,7 +15,6 @@ function RecipeCard({recipe, onDeleteFunc, showActionMessageState, showEditPopup
 
   if(!recipe) return null;
 
-  // Use dedicated cover image; fall back to first gallery image if none set
   const cardImage = recipe.cover_image_url ?? recipe.images_url?.[0] ?? null;
 
   return ( 

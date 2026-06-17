@@ -35,9 +35,6 @@ export const addRecipe = async (req: AuthRequest, res: Response) => {
         .select()
         .single();
 
-        /* .select() forces Supabase to instantly fetch the newly created row and pass it back into our data variable */
-       /*  .single(): Tells Supabase that we are only inserting one row, so please return data as a single, neat object {...} instead of a single-item array [{...}]. */
-
     if(error){
         console.error("Supabase error:", error);
         res.status(500).json({success: false, message: error.message});
@@ -50,8 +47,7 @@ export const addRecipe = async (req: AuthRequest, res: Response) => {
 export const updateRecipe = async (req: AuthRequest, res: Response) => {
     const {id} = req.params;
     const updates = req.body as Partial<NewRecipe>;
-     /* A Partial type tells TypeScript: "This object can contain any combination of fields from a recipe, but none of them are strictly required." */
-
+    
     const {data, error} = await supabase
     .from('recipes')
     .update(updates)

@@ -7,11 +7,11 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4); /* Soft darkened backdrop layer */
+    background-color: rgba(0, 0, 0, 0.4); 
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000; /* Ensured position above the dashboard card grid */
+    z-index: 2000; 
 }
 
 .editProfile__container {
@@ -43,7 +43,6 @@
     margin: 0;
 }
 
-/* Close '✕' Button layout rules */
 .editProfile__header .btn {
     background: transparent;
     border: none;
@@ -127,7 +126,6 @@
     width: 100%;
 }
 
-/* Push Cancel and Save Buttons completely to the right flank */
 .editProfile__danger-zone {
     margin-right: auto;
 }

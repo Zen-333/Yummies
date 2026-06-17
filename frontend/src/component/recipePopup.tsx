@@ -80,7 +80,6 @@ function RecipePopup({ onClose, onSaveSuccess, onRecipeUpdated, onGuestSave, rec
   };
 
   const uploadCoverImage = async (): Promise<string | null> => {
-    // No new file picked return the existing URL (could be null if removed)
     if (!coverImageFile) return existingCoverImageUrl;
 
     const { data: { session } } = await supabase.auth.getSession();
@@ -183,7 +182,6 @@ const handleSave = async () => {
     return;
   }
 
-  // Guest mode: no uploads, store blob URLs directly in state
   if (isGuest) {
     const guestRecipe: Recipe = {
       id: isEditMode ? recipeData!.id : crypto.randomUUID(),
