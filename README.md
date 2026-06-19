@@ -3,6 +3,7 @@
 A full-stack recipe manager for saving, organizing, and revisiting recipes, ingredients, steps, timing, cost, cover images, and galleries. Built as a hybrid architecture featuring an Express backend powered by Supabase Auth and Storage.
 
 **Live Demo:** (https://yummies-frontend.vercel.app/)
+[![Backend Tests](https://github.com/Zen-333/Yummies/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/Zen-333/Yummies/actions/workflows/backend-tests.yml)
 
 > **Why I Built This:** This project was designed primarily to practice authentication mechanics, ownership-scoped API design, and cross-origin security with a custom Node.js/Express backend, rather than completely relying on a Backend-as-a-Service (BaaS) abstraction layer.
 
@@ -52,13 +53,35 @@ All custom backend routes require a valid Supabase JWT sent via the `Authorizati
 
 ---
 
+## 🧪 Testing
+
+The backend is tested with [Vitest](https://vitest.dev/), using a mocked Supabase client so tests run fast, deterministically, and without needing real database credentials or network access.
+
+**Coverage:** 92%+ statements, 100% functions
+
+**What's covered:**
+* **Unit tests** — the recipe controller (CRUD + ownership checks), the user controller (account deletion), and the `requireAuth` JWT middleware, each run in isolation with the Supabase client mocked.
+* **Integration tests** — [Supertest](https://github.com/ladjs/supertest) requests sent through the real Express app (`App.ts`), exercising the actual CORS and auth middleware and route wiring end-to-end, with only the database call itself mocked.
+
+**Running tests locally:**
+```bash
+cd backend
+npm test              # run once
+npm run test:watch    # watch mode
+npm run test:coverage # with coverage report
+```
+
+Tests run automatically on every push and pull request via GitHub Actions see the badge above.
+
+---
+
 ## 📂 Project Structure
 
 ```text
 backend/
  └── src/
       ├── controllers/   # Request handlers (Recipe and User business logic)
-      ├── middleware/    # requireAuth — manual Supabase JWT validation
+      ├── middleware/    # requireAuth manual Supabase JWT validation
       ├── routes/        # Express router definitions
       ├── lib/           # Supabase initialization (Service Role Key config)
       └── types/         # TypeScript interface definitions
@@ -66,7 +89,7 @@ backend/
 frontend/
  └── src/
       ├── component/     # Modular UI components & viewer lightboxes
-      ├── context/       # AuthContext — session synchronization & profile handling
+      ├── context/       # AuthContext session synchronization & profile handling
       ├── lib/           # Supabase client instantiation (Anon Key config)
       ├── config/        # Centralized environment & API configuration
       └── types/         # Shareable frontend types
@@ -74,6 +97,5 @@ frontend/
 Contact
 
 Zen Hamam
-Portfolio: https://zenportfolio.netlify.app/
 GitHub: https://github.com/Zen-333
 LinkedIn: https://www.linkedin.com/in/zen-al-din-hamam-04572120b/
