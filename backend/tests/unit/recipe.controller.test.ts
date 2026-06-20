@@ -92,6 +92,26 @@ describe('recipe.controller', () => {
         recipe: newRecipe,
       })
     })
+
+    it('returns 500 when Supabase fails to insert the recipe', async () => {
+      vi.mocked(supabase.from).mockReturnValue(
+        createSupabaseQueryMock({ data: null, error: { message: 'Insert failed' } })
+      )
+
+      const req = {
+        body: { name: 'Omelette' },
+        userId: 'user-123',
+      } as unknown as AuthRequest
+      const res = createMockResponse()
+
+      await addRecipe(req, res)
+
+      expect(res.status).toHaveBeenCalledWith(500)
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Insert failed',
+      })
+    })
   })
 
   describe('updateRecipe', () => {
@@ -151,6 +171,24 @@ describe('recipe.controller', () => {
       expect(res.json).toHaveBeenCalledWith({
         success: true,
         message: 'recipe deleted',
+        id: 'recipe-1',
+      })
+    })
+
+    it('returns 404 when Supabase fails to delete the recipe', async () => {
+      vi.mocked(supabase.from).mockReturnValue(
+        createSupabaseQueryMock({ data: null, error: { message: 'Delete failed' } })
+      )
+
+      const req = { params: { id: 'recipe-1' }, userId: 'user-123' } as unknown as AuthRequest
+      const res = createMockResponse()
+
+      await deleteRecipe(req, res)
+
+      expect(res.status).toHaveBeenCalledWith(404)
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Invalid recipe ID',
         id: 'recipe-1',
       })
     })

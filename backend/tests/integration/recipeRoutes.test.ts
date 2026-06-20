@@ -36,11 +36,32 @@ describe('GET /api/recipe', () => {
       })
     )
 
-    const response = await request(app)
+   const response = await request(app)
       .get('/api/recipe')
       .set('Authorization', 'Bearer valid-token')
 
     expect(response.status).toBe(200)
     expect(response.body.recipes).toHaveLength(1)
+  })
+
+  it('returns 500 via the centralized error handler when an unexpected exception is thrown', async () => {
+    vi.mocked(supabase.auth.getUser).mockResolvedValue({
+      data: { user: { id: 'user-123' } },
+      error: null,
+    } as any)
+
+    vi.mocked(supabase.from).mockImplementation(() => {
+      throw new Error('Unexpected failure')
+    })
+
+    const response = await request(app)
+      .get('/api/recipe')
+      .set('Authorization', 'Bearer valid-token')
+
+    expect(response.status).toBe(500)
+    expect(response.body).toEqual({
+      success: false,
+      message: 'Internal server error',
+    })
   })
 })
