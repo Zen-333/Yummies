@@ -11,6 +11,8 @@
     align-items: center;
     gap: 20px;
     margin: auto;
+    padding: 0 20px;
+    text-align: center;
 }
 
 .hero__icon {
@@ -18,7 +20,19 @@
     color: gray;
 }
 
+.hero__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
 .hero__p {
     color: gray;
 }
 
+@media (max-width: 768px) {
+    .hero {
+        height: auto;
+        min-height: 55vh;
+        padding: 40px 16px;
+    }
+}

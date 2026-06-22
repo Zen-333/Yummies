@@ -1,4 +1,4 @@
-.successMessage__container{
+.successMessage__container {
     position: fixed;
     top: 20px;
     left: 50%;
@@ -8,42 +8,53 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     animation: slideDown 0.5s ease-out forwards;
-
+    white-space: nowrap;
 }
 
-.successMessage__success{
+.successMessage__success {
     padding: 10px 20px;
     background-color: green;
     border-color: rgb(0, 100, 0);
 }
 
-.successMessage__fail{
+.successMessage__fail {
     padding: 10px 20px;
     background-color: red;
     border-color: rgb(100, 0, 0);
 }
 
-.successMessage__message{
+.successMessage__message {
     font-family: inherit;
     letter-spacing: 1px;
     font-style: none;
 }
 
-.successMessage__message--success{
+.successMessage__message--success {
     color: rgb(172, 255, 172);
 }
 
-.successMessage__message--fail{
+.successMessage__message--fail {
     color: rgb(255, 172, 172);
 }
 
 @keyframes slideDown {
     from {
-        top: -100px;    /* Start above the screen */
-        opacity: 0;     /* Invisible */
+        top: -100px;
+        opacity: 0;
     }
     to {
-        top: 20px;      /* End at 20px from top */
-        opacity: 1;     /* Fully visible */
+        top: 20px;
+        opacity: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .successMessage__container {
+        max-width: 88vw;
+        white-space: normal;
+        text-align: center;
+        font-size: 13px;
+        letter-spacing: 0.3px;
+        padding: 10px 16px;
     }
 }

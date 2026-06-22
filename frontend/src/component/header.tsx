@@ -18,7 +18,8 @@ function Header({ onAddClick, onShowLogin, onEditProfile }: HeaderProps) {
             </div>
             <div className="header__actions">
                 <button className="btn--primary btn" onClick={onAddClick}>
-                    <FontAwesomeIcon icon={faPlus} /> Add Recipe
+                    <FontAwesomeIcon icon={faPlus} />
+                    <span className="header__btn-text">Add Recipe</span>
                 </button>
 
                 {user ? (

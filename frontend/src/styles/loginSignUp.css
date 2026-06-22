@@ -9,13 +9,14 @@
     justify-content: center;
     align-items: center;
     z-index: 1200;
+    padding: 16px;
 }
 
 .loginSignUp__container {
     background-color: #ffffff;
     border-radius: 12px;
     width: 420px;
-    max-width: 95vw;
+    max-width: 100%; 
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
     overflow: hidden;
 }
@@ -68,6 +69,7 @@
     color: #666;
     transition: background-color 0.15s ease, color 0.15s ease;
     font-family: inherit;
+    min-height: 36px;
 }
 
 .loginSignUp__tab--active {
@@ -180,4 +182,35 @@
 .loginSignUp__google-icon {
     width: 18px;
     height: 18px;
+}
+
+@media (max-width: 600px) {
+    .loginSignUp__overlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+    .loginSignUp__container {
+        border-radius: 16px 16px 0 0;
+        max-height: 95vh;
+        max-height: 95dvh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .loginSignUp__body input {
+        font-size: 16px;
+    }
+
+    .loginSignUp__header {
+        padding: 20px 20px 0;
+    }
+
+    .loginSignUp__tabs {
+        margin: 16px 20px 0;
+    }
+
+    .loginSignUp__body {
+        padding: 20px 20px 32px;
+    }
 }

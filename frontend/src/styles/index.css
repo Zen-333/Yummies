@@ -52,3 +52,11 @@ body {
     color: #ffffff;
     border-color: #d0d0d0;
 }
+
+/* ── Mobile: ensure tappable touch targets (Apple HIG: 44×44pt minimum) ── */
+@media (max-width: 768px) {
+    .btn:not(.btn--icon) {
+        min-height: 44px;
+        padding: 10px 16px;
+    }
+}
